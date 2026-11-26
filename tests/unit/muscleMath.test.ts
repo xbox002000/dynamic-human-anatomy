@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fusiformV1, polylineLength, type P3 } from '../../apps/web/src/muscles/muscleMath';
+import { fusiformV1, fusiformV2, polylineLength, type P3 } from '../../apps/web/src/muscles/muscleMath';
 import { validateManifest, type AnatomyManifest } from '../../packages/anatomy-schema/src/index';
 import manifest from '../../apps/web/public/data/arm_manifest.json';
 
@@ -64,10 +64,32 @@ describe('fusiform_v1 profile', () => {
     expect(fusiformV1({ length: 0.75, restLength: 1, activation: 0 }).bulge).toBeGreaterThan(0.4);
     expect(fusiformV1({ length: 1.15, restLength: 1, activation: 0 }).stretchWeight).toBeGreaterThan(0.5);
   });
+  it('M2.6: activation never drives longitudinal shortening', () => {
+    for (const length of [0.7, 0.85, 1, 1.1, 1.3]) {
+      const base = fusiformV2({ length, restLength: 1, activation: 0 });
+      for (const activation of [0.25, 0.5, 1]) {
+        const o = fusiformV2({ length, restLength: 1, activation });
+        expect(o.shortenWeight).toBe(base.shortenWeight);
+        expect(o.contraction).toBe(base.contraction);
+      }
+    }
+  });
+  it('M2.6: isometric (rest length) + full activation → bulge but zero shortening', () => {
+    const o = fusiformV2({ length: 1, restLength: 1, activation: 1 });
+    expect(o.shortenWeight).toBe(0);
+    expect(o.bulgeWeight).toBeGreaterThan(0.3);
+  });
+  it('M2.6: shortenWeight follows geometric shortening', () => {
+    expect(fusiformV2({ length: 0.85, restLength: 1, activation: 0 }).shortenWeight).toBeCloseTo(0.5);
+    expect(fusiformV2({ length: 1.1, restLength: 1, activation: 0 }).shortenWeight).toBe(0);
+  });
+  it('fusiform_v1 is an alias of v2', () => {
+    expect(fusiformV1).toBe(fusiformV2);
+  });
   it('all outputs stay in 0..1', () => {
     for (const length of [0.1, 0.5, 1, 1.5, 3]) {
       for (const activation of [-1, 0, 0.5, 1, 2]) {
-        const o = fusiformV1({ length, restLength: 1, activation });
+        const o = fusiformV2({ length, restLength: 1, activation });
         for (const v of Object.values(o)) {
           expect(v).toBeGreaterThanOrEqual(0);
           expect(v).toBeLessThanOrEqual(1);

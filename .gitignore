@@ -10,3 +10,4 @@ assets/working/**/*.blend1
 Thumbs.db
 tmp-*.png
 
+tmp/

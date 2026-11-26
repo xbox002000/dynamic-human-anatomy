@@ -1169,9 +1169,10 @@
       ],
       "innervation": "Musculocutaneous nerve (C5–C6)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1232,9 +1233,10 @@
       ],
       "innervation": "Musculocutaneous nerve (C5–C6)；外側部分常見橈神經分支",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1297,9 +1299,10 @@
       ],
       "innervation": "Radial nerve (C6–C8)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1360,9 +1363,10 @@
       ],
       "innervation": "Radial nerve (C5–C6)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1414,9 +1418,10 @@
       ],
       "innervation": "Median nerve (C6–C7)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1480,9 +1485,10 @@
       ],
       "innervation": "Median nerve；尺側腕屈肌為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1554,9 +1560,10 @@
       ],
       "innervation": "Median nerve；屈指深肌尺側半為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1625,9 +1632,10 @@
       ],
       "innervation": "Radial nerve（深支 / 後骨間神經）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1684,9 +1692,10 @@
       ],
       "innervation": "Radial nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1738,9 +1747,10 @@
       ],
       "innervation": "Radial nerve (C7–C8)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1793,9 +1803,10 @@
       ],
       "innervation": "Median nerve（返支）；屈拇短肌深頭為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1852,9 +1863,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1906,9 +1918,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -1966,9 +1979,10 @@
       ],
       "innervation": "第 1–2 條 Median nerve；第 3–4 條 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2020,9 +2034,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2090,9 +2105,10 @@
       ],
       "innervation": "Musculocutaneous nerve (C5–C6)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2153,9 +2169,10 @@
       ],
       "innervation": "Musculocutaneous nerve (C5–C6)；外側部分常見橈神經分支",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2218,9 +2235,10 @@
       ],
       "innervation": "Radial nerve (C6–C8)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2281,9 +2299,10 @@
       ],
       "innervation": "Radial nerve (C5–C6)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2335,9 +2354,10 @@
       ],
       "innervation": "Median nerve (C6–C7)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2401,9 +2421,10 @@
       ],
       "innervation": "Median nerve；尺側腕屈肌為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2475,9 +2496,10 @@
       ],
       "innervation": "Median nerve；屈指深肌尺側半為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2546,9 +2568,10 @@
       ],
       "innervation": "Radial nerve（深支 / 後骨間神經）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2605,9 +2628,10 @@
       ],
       "innervation": "Radial nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2659,9 +2683,10 @@
       ],
       "innervation": "Radial nerve (C7–C8)",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2714,9 +2739,10 @@
       ],
       "innervation": "Median nerve（返支）；屈拇短肌深頭為 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2773,9 +2799,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2827,9 +2854,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2887,9 +2915,10 @@
       ],
       "innervation": "第 1–2 條 Median nerve；第 3–4 條 Ulnar nerve",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {
@@ -2941,9 +2970,10 @@
       ],
       "innervation": "Ulnar nerve（深支）",
       "activation": 0,
-      "deformation_profile": "fusiform_v1",
+      "deformation_profile": "fusiform_v2",
       "morphs": {
-        "contract": "contract",
+        "bulge": "bulge",
+        "shorten": "shorten",
         "stretch": "stretch"
       },
       "source": {

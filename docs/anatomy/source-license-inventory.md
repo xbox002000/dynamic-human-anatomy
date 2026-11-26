@@ -8,6 +8,9 @@
 | --- | --- | --- | --- | --- |
 | Z-Anatomy 左上肢 Rig | `apps/web/public/models/arm_zanatomy_l.glb` | Z-Anatomy 幾何（經 anatomy-explorer 轉檔），DHA 加骨架/權重/shape keys | **CC BY-SA 4.0**（ShareAlike 繼承） | 骨：humerus/radius/ulna；肌：biceps（長+短頭合併）、brachialis、triceps（三頭合併） |
 | Z-Anatomy 左上肢 manifest | `apps/web/public/data/arm_zanatomy_manifest.json` | 由 `build_arm_zanatomy.py` 從網格端點推算 | CC BY-SA 4.0 | 關節中心、軸向、附著點皆為 `approximate` |
+| Z-Anatomy 雙側上肢 Rig | `apps/web/public/models/upper_limbs.glb` | Z-Anatomy 幾何（經 anatomy-explorer 轉檔），DHA 加骨架（含手指）/權重/`bulge`·`shorten`·`stretch` shape keys | **CC BY-SA 4.0**（ShareAlike 繼承） | 每側：鎖骨、肩胛、肱骨、橈骨、尺骨、手部骨骼；15 組肌肉（含握力肌群） |
+| Z-Anatomy 雙側上肢 manifest | `apps/web/public/data/upper_limbs_manifest.json` | 由 `build_upper_limbs.py` 從網格推算 | CC BY-SA 4.0 | 關節中心/軸向、附著點、握把幾何皆為 `approximate` |
+| 情境動作 | `apps/web/public/data/motions/**` | DHA 撰寫 | CC BY-SA 4.0 | 啟動曲線為教科書近似，非 EMG |
 | 程序化手臂樣本 | `apps/web/public/models/arm_sample.glb`、`arm_manifest.json` | 本專案腳本產生 | project-internal | placeholder，僅供管線測試（`?model=sample`） |
 | 專案程式碼 | `apps/`、`packages/`、`tools/`、`tests/` | 本專案 | **MIT** | 與資產授權分離 |
 

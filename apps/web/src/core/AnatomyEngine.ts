@@ -76,19 +76,30 @@ export class AnatomyEngine {
         console.warn('[Grip] 未啟用', g.id, e);
       }
     }
-    try {
-      this.ik = new IKController(this.root, this.pose, { effector: 'hand_l', joints: ['shoulder_left', 'elbow_left'] });
-      this.ikHandle = new THREE.Mesh(
-        new THREE.SphereGeometry(0.018, 20, 14),
-        new THREE.MeshBasicMaterial({ color: 0xffb02e, transparent: true, opacity: 0.85, depthTest: false }),
-      );
-      this.ikHandle.renderOrder = 30;
-      this.ikHandle.visible = this.ikEnabled;
-      this.sm.scene.add(this.ikHandle);
+    // M2.6：雙側 IK，每側一條鏈、一個把手，彼此獨立求解（只動該側關節）
+    for (const h of this.ikChains.values()) h.handle.removeFromParent();
+    this.ikChains.clear();
+    for (const [side, effector] of [['left', 'hand_l'], ['right', 'hand_r']] as const) {
+      const joints = [`shoulder_${side}`, `elbow_${side}`];
+      if (!joints.every((j) => this.pose.getDefinition(j))) continue;
+      try {
+        const ik = new IKController(this.root, this.pose, { effector, joints });
+        const handle = new THREE.Mesh(
+          new THREE.SphereGeometry(0.018, 20, 14),
+          new THREE.MeshBasicMaterial({ color: side === 'left' ? 0xffb02e : 0x2ec4ff, transparent: true, opacity: 0.85, depthTest: false }),
+        );
+        handle.renderOrder = 30;
+        handle.visible = this.ikEnabled;
+        handle.userData.ikSide = side;
+        this.sm.scene.add(handle);
+        this.ikChains.set(side, { ik, handle, error: 0 });
+      } catch (e) {
+        console.warn('[IK] 未啟用', side, e);
+      }
+    }
+    if (this.ikChains.size) {
       this.pose.subscribe(() => this.syncHandle());
       this.syncHandle();
-    } catch (e) {
-      console.warn('[IK] 未啟用', e);
     }
     this.pose.subscribe(() => this.muscles.update());
     this.muscles.subscribe(() => {
@@ -203,31 +214,35 @@ export class AnatomyEngine {
     };
     el.addEventListener('pointerdown', (e) => {
       down = { x: e.clientX, y: e.clientY };
-      if (!this.ik || !this.ikHandle || !this.ikEnabled) return;
+      if (!this.ikChains.size || !this.ikEnabled) return;
       this.raycaster.setFromCamera(ndcOf(e), this.sm.camera);
-      if (this.raycaster.intersectObject(this.ikHandle, false).length) {
+      const handles = [...this.ikChains.values()].map((c) => c.handle);
+      const hit = this.raycaster.intersectObjects(handles, false)[0];
+      if (hit) {
+        const side = hit.object.userData.ikSide as string;
         // 拖曳平面：通過把手、面向相機
         const n = this.sm.camera.getWorldDirection(new THREE.Vector3()).negate();
-        this.dragPlane.setFromNormalAndCoplanarPoint(n, this.ikHandle.position);
-        this.dragging = true;
+        this.dragPlane.setFromNormalAndCoplanarPoint(n, hit.object.position);
+        this.dragging = side;
         this.sm.controls.enabled = false;
         el.setPointerCapture(e.pointerId);
         e.stopPropagation();
       }
     }, { capture: true });
     el.addEventListener('pointermove', (e) => {
-      if (!this.dragging || !this.ik) return;
+      const c = this.dragging ? this.ikChains.get(this.dragging) : undefined;
+      if (!c) return;
       this.raycaster.setFromCamera(ndcOf(e), this.sm.camera);
       const hit = this.raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3());
       if (hit) {
-        this.ikTarget.copy(hit);
-        this.ikError = this.ik.solve(hit);
-        this.ikHandle!.position.copy(hit);
+        c.error = c.ik.solve(hit);
+        c.handle.position.copy(hit);
+        this.emit();
       }
     });
     el.addEventListener('pointerup', (e) => {
       if (this.dragging) {
-        this.dragging = false;
+        this.dragging = null;
         this.sm.controls.enabled = true;
         el.releasePointerCapture(e.pointerId);
         this.syncHandle();
@@ -242,17 +257,28 @@ export class AnatomyEngine {
   }
 
   // ------------------------------------------------------------ IK
-  private ik: IKController | null = null;
-  private ikHandle: THREE.Mesh | null = null;
+  private readonly ikChains = new Map<string, { ik: IKController; handle: THREE.Mesh; error: number }>();
   private ikEnabled = true;
-  private dragging = false;
+  /** 正在拖曳的那一側（null = 沒有拖曳） */
+  private dragging: string | null = null;
   private readonly dragPlane = new THREE.Plane();
-  private readonly ikTarget = new THREE.Vector3();
-  /** 最近一次 IK 求解後與目標的距離（公尺），超出可達範圍時 > 0 */
-  ikError = 0;
 
   get hasIK(): boolean {
-    return !!this.ik;
+    return this.ikChains.size > 0;
+  }
+
+  get ikSides(): string[] {
+    return [...this.ikChains.keys()];
+  }
+
+  /** 各側最近一次 IK 求解後與目標的距離（公尺），超出可達範圍時 > 0 */
+  ikErrorOf(side: string): number {
+    return this.ikChains.get(side)?.error ?? 0;
+  }
+
+  /** 相容舊介面：兩側中較大的誤差 */
+  get ikError(): number {
+    return Math.max(0, ...[...this.ikChains.values()].map((c) => c.error));
   }
 
   get isIKEnabled(): boolean {
@@ -261,25 +287,28 @@ export class AnatomyEngine {
 
   setIKEnabled(v: boolean): void {
     this.ikEnabled = v;
-    if (this.ikHandle) this.ikHandle.visible = v;
+    for (const c of this.ikChains.values()) c.handle.visible = v;
     this.emit();
   }
 
-  /** 以程式設定 IK 目標（測試 / 自動化用），回傳誤差 */
-  solveIK(target: THREE.Vector3): number {
-    if (!this.ik) return Infinity;
-    this.ikError = this.ik.solve(target);
+  /** 以程式設定某側 IK 目標（測試 / 自動化用），回傳誤差 */
+  solveIK(target: THREE.Vector3, side = 'left'): number {
+    const c = this.ikChains.get(side);
+    if (!c) return Infinity;
+    c.error = c.ik.solve(target);
     this.syncHandle();
-    return this.ikError;
+    return c.error;
   }
 
-  effectorPosition(): THREE.Vector3 | null {
-    return this.ik ? this.ik.effectorWorld() : null;
+  effectorPosition(side = 'left'): THREE.Vector3 | null {
+    return this.ikChains.get(side)?.ik.effectorWorld() ?? null;
   }
 
   private syncHandle(): void {
-    if (!this.ik || !this.ikHandle || this.dragging) return;
-    this.ikHandle.position.copy(this.ik.effectorWorld());
+    for (const [side, c] of this.ikChains) {
+      if (side === this.dragging) continue;
+      c.handle.position.copy(c.ik.effectorWorld());
+    }
   }
 
   // ------------------------------------------------------------ pose / playback
@@ -430,7 +459,6 @@ export class AnatomyEngine {
     for (const p of this.props) p.removeFromParent();
     this.props.length = 0;
     this.heldMass.clear();
-    this.gripContact.clear();
     for (const g of this.grips.values()) g.release();
     for (const def of this.motion?.props ?? []) {
       if (def.type !== 'dumbbell' || !def.bone) continue;
@@ -442,8 +470,7 @@ export class AnatomyEngine {
         db.position.copy(grip.centerLocal);
         db.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), grip.axisLocal);
         bone.add(db);
-        const res = grip.solve(1);
-        this.gripContact.set(grip.def.id, res.contact);
+        grip.solve(1);
         this.heldMass.set(grip.def.id, def.massKg ?? 0);
       } else {
         bone.updateMatrixWorld(true);
@@ -459,7 +486,6 @@ export class AnatomyEngine {
 
   // ------------------------------------------------------------ grip / load
   private readonly grips = new Map<string, GripController>();
-  private readonly gripContact = new Map<string, Record<string, boolean>>();
   private readonly heldMass = new Map<string, number>();
 
   get gripIds(): string[] {
@@ -471,12 +497,20 @@ export class AnatomyEngine {
     const g = this.grips.get(id);
     if (!g) return;
     if (closure <= 0) g.release();
-    else this.gripContact.set(id, g.solve(closure).contact);
+    else g.solve(closure);
     this.emit();
   }
 
+  /**
+   * M2.6：接觸狀態一律依「目前實際手指姿勢」即時量測，不再快取求解當下的結果。
+   * 手指被 FK 滑桿、動作播放或張開改動後，顯示的接觸狀態會跟著改變。
+   */
   gripContactOf(id: string): Record<string, boolean> | undefined {
-    return this.gripContact.get(id);
+    return this.grips.get(id)?.measure().contact;
+  }
+
+  gripGapOf(id: string): Record<string, number> | undefined {
+    return this.grips.get(id)?.measure().gap;
   }
 
   /** 每側：握持重量對肘關節的外力矩（N·m）與水平力臂（m） */

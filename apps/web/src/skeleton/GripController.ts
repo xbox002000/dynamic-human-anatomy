@@ -87,55 +87,153 @@ export class GripController {
    * closure: 0 = 手指伸直, 1 = 完全握緊（接觸握把）。介於中間時按比例縮放接觸角度。
    * 回傳每指是否接觸；不發出 PoseController 通知以外的副作用。
    */
-  solve(closure = 1, step = 1.5): GripResult {
-    const contact: Record<string, boolean> = {};
-    const angles: Record<string, number> = {};
+  /** 接觸判定容差（公尺）：表面間隙小於此值即視為接觸 */
+  static readonly CONTACT_TOLERANCE = 0.002;
+
+  /** 指定手指從第 k 段起，所有骨段末端到握把表面的最小間隙（負值 = 穿透） */
+  private fingerGap(f: FingerRuntime, fromSeg = 0): number {
+    const { center, axis } = this.handleWorld();
     const limit = this.def.radius + this.def.fingerRadius;
+    let gap = Infinity;
+    for (let m = fromSeg; m < f.segments.length; m++) {
+      const s = f.segments[m]!;
+      const tip = s.bone.localToWorld(s.tailLocal.clone());
+      gap = Math.min(gap, this.distToAxis(tip, center, axis) - limit);
+    }
+    return gap;
+  }
+
+  /**
+   * 依「目前實際的手指姿勢」量測每指接觸狀態與間隙（公尺）。
+   * solve() 的 contact 一律由此產生，保證與畫面上的手指姿勢一致。
+   */
+  measure(): { contact: Record<string, boolean>; gap: Record<string, number> } {
+    this.root.updateMatrixWorld(true);
+    const contact: Record<string, boolean> = {};
+    const gap: Record<string, number> = {};
     for (const f of this.fingers) {
-      for (const j of f.joints) this.pose.setAngle(j, 0, 0, true);
-      let touched = false;
+      const g = this.fingerGap(f);
+      gap[f.id] = g;
+      contact[f.id] = g <= GripController.CONTACT_TOLERANCE;
+    }
+    return { contact, gap };
+  }
+
+  /**
+   * closure: 0 = 手指伸直, 1 = 完全握緊（接觸握把）。介於中間時按比例縮放接觸角度。
+   * 每個關節先粗掃找到第一次碰觸的區間，再二分逼近接觸角，停在「不穿透」的一側。
+   * 回傳的 contact / gap 是在最終姿勢（含 closure 縮放）上重新量測的結果。
+   */
+  solve(closure = 1, step = 2): GripResult & { gap: Record<string, number> } {
+    const angles: Record<string, number> = {};
+    for (const f of this.fingers) {
+      this.openFinger(f);
       for (let k = 0; k < f.joints.length; k++) {
         const jid = f.joints[k]!;
         const max = this.pose.getDefinition(jid)?.limits[0]?.maxDeg ?? 90;
-        let deg = 0;
-        for (; deg <= max; deg += step) {
+        const start = this.pose.getAngles(jid)[0] ?? 0;
+        const gapAt = (deg: number) => {
           this.pose.setAngle(jid, 0, deg, true);
-          const { center, axis } = this.handleWorld();
-          // 檢查此骨段以及其遠端所有骨段的末端
-          let hit = false;
-          for (let m = k; m < f.segments.length; m++) {
-            const s = f.segments[m]!;
-            const tip = s.bone.localToWorld(s.tailLocal.clone());
-            if (this.distToAxis(tip, center, axis) <= limit) {
-              hit = true;
+          this.root.updateMatrixWorld(true);
+          return this.fingerGap(f, k);
+        };
+        let lo = start;
+        let hi = -Infinity;
+        if (gapAt(start) <= 0) {
+          hi = start; // 起始就已貼住，不再屈曲
+        } else {
+          for (let deg = start + step; deg < max + step; deg += step) {
+            const d = Math.min(deg, max);
+            if (gapAt(d) <= 0) {
+              hi = d;
               break;
             }
-          }
-          if (hit) {
-            touched = true;
-            break;
+            lo = d;
           }
         }
-        // 停在接觸前一格；若整段都沒碰到就停在上限
-        const final = Math.min(max, Math.max(0, deg - (deg <= max ? step : 0)));
+        let final = max;
+        if (Number.isFinite(hi)) {
+          for (let it = 0; it < 12 && hi - lo > 0.05; it++) {
+            const mid = (lo + hi) / 2;
+            if (gapAt(mid) <= 0) hi = mid;
+            else lo = mid;
+          }
+          final = lo;
+        }
         this.pose.setAngle(jid, 0, final, true);
       }
-      contact[f.id] = touched;
-      // 依 closure 縮放（開合動畫用）
+      // 依 closure 在「張開姿勢」與「接觸姿勢」之間內插（開合動畫用）；
+      // 兩端都不穿透，且屈曲為單調，所以中間值也不會穿透
+      const c = THREE.MathUtils.clamp(closure, 0, 1);
+      const open = this.openAngles.get(f.id)!;
       for (const j of f.joints) {
-        const a = this.pose.getAngles(j)[0] ?? 0;
-        const v = a * THREE.MathUtils.clamp(closure, 0, 1);
-        this.pose.setAngle(j, 0, v, true);
-        angles[j] = v;
+        const closed = this.pose.getAngles(j);
+        const o = open[j] ?? closed.map(() => 0);
+        closed.forEach((v, i) => this.pose.setAngle(j, i, (o[i] ?? 0) + (v - (o[i] ?? 0)) * c, true));
+        angles[j] = this.pose.getAngles(j)[0] ?? 0;
       }
     }
     this.pose.commit();
-    return { contact, angles };
+    const { contact, gap } = this.measure();
+    return { contact, gap, angles };
   }
 
-  /** 張開手指 */
+  /** 每指的「張開姿勢」：rest 若已穿透握把（例如拇指），則伸展 / 外展到離開握把 */
+  private readonly openAngles = new Map<string, Record<string, number[]>>();
+
+  /** 張開安全間隙（公尺） */
+  static readonly OPEN_CLEARANCE = 0.004;
+
+  /**
+   * 把手指放到張開姿勢並記錄。先全部歸零；若仍穿透或貼住握把，
+   * 以座標搜尋在關節限制內調整各自由度（含拇指 CMC 外展），直到間隙 ≥ OPEN_CLEARANCE。
+   */
+  private openFinger(f: FingerRuntime): void {
+    for (const j of f.joints) {
+      const n = this.pose.getAngles(j).length;
+      for (let i = 0; i < n; i++) this.pose.setAngle(j, i, 0, true);
+    }
+    this.root.updateMatrixWorld(true);
+    const gap = () => {
+      this.root.updateMatrixWorld(true);
+      return this.fingerGap(f);
+    };
+    let best = gap();
+    for (let round = 0; round < 40 && best < GripController.OPEN_CLEARANCE; round++) {
+      let improved = false;
+      for (const j of f.joints) {
+        const lims = this.pose.getDefinition(j)?.limits ?? [];
+        lims.forEach((_, i) => {
+          for (const dir of [-1, 1]) {
+            const cur = this.pose.getAngles(j)[i] ?? 0;
+            this.pose.setAngle(j, i, cur + dir * 3, true);
+            const g = gap();
+            if (g > best + 1e-5) {
+              best = g;
+              improved = true;
+            } else {
+              this.pose.setAngle(j, i, cur, true);
+            }
+          }
+        });
+      }
+      if (!improved) break;
+    }
+    const rec: Record<string, number[]> = {};
+    for (const j of f.joints) rec[j] = this.pose.getAngles(j);
+    this.openAngles.set(f.id, rec);
+  }
+
+  /** 張開手指（回到不穿透握把的張開姿勢） */
   release(): void {
-    this.setAll(this.def, 0);
+    for (const f of this.fingers) {
+      const open = this.openAngles.get(f.id);
+      if (!open) {
+        this.openFinger(f);
+        continue;
+      }
+      for (const [j, arr] of Object.entries(open)) arr.forEach((v, i) => this.pose.setAngle(j, i, v, true));
+    }
     this.pose.commit();
   }
 

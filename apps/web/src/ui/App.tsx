@@ -44,13 +44,14 @@ export function App() {
         const preset = PRESET_POSES.find((p) => p.id === q.get('pose'));
         if (preset) eng.applyPose(preset);
         if (q.get('select')) eng.select(q.get('select'));
-        // ?ik=dx,dy,dz：把手部相對目前位置移動（公尺），驗收 IK 用
-        const ik = q.get('ik')?.split(',').map(Number);
-        if (ik && ik.length === 3 && ik.every(Number.isFinite)) {
-          const p = eng.effectorPosition();
+        // ?ik=dx,dy,dz（左手）/ ?ikr=dx,dy,dz（右手）：把手部相對目前位置移動（公尺），驗收雙側 IK 用
+        for (const [param, side] of [['ik', 'left'], ['ikr', 'right']] as const) {
+          const d = q.get(param)?.split(',').map(Number);
+          if (!d || d.length !== 3 || !d.every(Number.isFinite)) continue;
+          const p = eng.effectorPosition(side);
           if (p) {
-            const err = eng.solveIK(p.add(new Vector3(ik[0], ik[1], ik[2])));
-            console.info('[IK] residual', err);
+            const err = eng.solveIK(p.add(new Vector3(d[0], d[1], d[2])), side);
+            console.info(`[IK] ${side} residual`, err);
           }
         }
         setEngine(eng);
@@ -221,9 +222,17 @@ export function App() {
               {engine.hasIK && (
                 <label className="check">
                   <input type="checkbox" checked={engine.isIKEnabled} onChange={(e) => engine.setIKEnabled(e.target.checked)} />
-                  IK：拖曳橘色把手移動手部{engine.ikError > 0.005 ? `（超出可達範圍 ${(engine.ikError * 100).toFixed(1)} cm）` : ''}
+                  IK：拖曳把手移動手部（橘＝左手、藍＝右手，可分別拖曳）
                 </label>
               )}
+              {engine.hasIK &&
+                engine.ikSides
+                  .filter((s) => engine.ikErrorOf(s) > 0.005)
+                  .map((s) => (
+                    <p key={s} className="muted small" data-ik-side={s}>
+                      {s === 'left' ? '左手' : '右手'}超出可達範圍 {(engine.ikErrorOf(s) * 100).toFixed(1)} cm
+                    </p>
+                  ))}
               <label className="check">
                 <input type="checkbox" checked={showFingers} onChange={(e) => setShowFingers(e.target.checked)} />
                 顯示手指關節
@@ -232,13 +241,20 @@ export function App() {
                 <>
                   <h2>握持</h2>
                   {engine.gripIds.map((gid) => {
-                    const contact = engine.gripContactOf(gid);
-                    const touched = contact ? Object.values(contact).filter(Boolean).length : 0;
-                    const total = contact ? Object.keys(contact).length : 0;
-                    const v = gripClosure[gid] ?? (contact ? 1 : 0);
+                    // 接觸狀態依目前實際手指姿勢即時量測
+                    const contact = engine.gripContactOf(gid) ?? {};
+                    const gaps = engine.gripGapOf(gid) ?? {};
+                    const touched = Object.values(contact).filter(Boolean).length;
+                    const total = Object.keys(contact).length;
+                    const open = Object.entries(gaps).filter(([f]) => !contact[f]).map(([, g]) => g);
+                    const maxGapMm = open.length ? Math.max(...open) * 1000 : 0;
+                    const v = gripClosure[gid] ?? (touched > 0 ? 1 : 0);
                     return (
                       <label key={gid} className="slider">
-                        <span>{gid.endsWith('left') ? '左手' : '右手'}握拳 {(v * 100).toFixed(0)}%{contact ? ` · 接觸 ${touched}/${total} 指` : ''}</span>
+                        <span data-grip={gid} data-touched={touched} data-total={total}>
+                          {gid.endsWith('left') ? '左手' : '右手'}握拳 {(v * 100).toFixed(0)}% · 接觸 {touched}/{total} 指
+                          {open.length > 0 ? `（未接觸最大間隙 ${maxGapMm.toFixed(0)} mm）` : ''}
+                        </span>
                         <input type="range" min={0} max={1} step={0.05} value={v} onChange={(e) => { const c = +e.target.value; setGripClosure({ ...gripClosure, [gid]: c }); engine.setGrip(gid, c); }} />
                       </label>
                     );

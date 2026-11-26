@@ -52,9 +52,14 @@ export interface MuscleDefinition {
   deformation_profile: string;
   /** 該 mesh 上的 morph target 名稱對應 */
   morphs?: {
+    /** 舊版：徑向隆起 + 縱向縮短混在一起（M2.6 起僅相容用，視為 bulge） */
     contract?: string;
-    stretch?: string;
+    /** 徑向隆起：可由 activation 驅動 */
     bulge?: string;
+    /** 縱向縮短：只由幾何長度驅動 */
+    shorten?: string;
+    /** 拉長變細 */
+    stretch?: string;
   };
   source: SourceInfo;
 }

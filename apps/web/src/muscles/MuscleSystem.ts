@@ -3,6 +3,10 @@ import type { AttachmentPoint, MuscleDefinition, MuscleState } from '@dha/anatom
 import { clamp01 } from '@dha/anatomy-schema';
 import { DEFORMATION_PROFILES, polylineLength, type P3 } from './muscleMath';
 
+function morphIndex(dict: Record<string, number>, name: string | undefined): number {
+  return name !== undefined ? dict[name] ?? -1 : -1;
+}
+
 interface PathPoint {
   bone: THREE.Bone;
   local: THREE.Vector3;
@@ -14,7 +18,8 @@ interface MuscleRuntime {
   path: PathPoint[];
   restLength: number;
   state: MuscleState;
-  contractIdx: number;
+  bulgeIdx: number;
+  shortenIdx: number;
   stretchIdx: number;
 }
 
@@ -41,8 +46,10 @@ export class MuscleSystem {
         mesh,
         path,
         restLength: 1,
-        contractIdx: def.morphs?.contract ? dict[def.morphs.contract] ?? -1 : -1,
-        stretchIdx: def.morphs?.stretch ? dict[def.morphs.stretch] ?? -1 : -1,
+        // 舊版 manifest 只有 contract（隆起+縮短混合）：視為 bulge，避免 activation 驅動縱向縮短的同時仍能顯示隆起
+        bulgeIdx: morphIndex(dict, def.morphs?.bulge ?? def.morphs?.contract),
+        shortenIdx: morphIndex(dict, def.morphs?.shorten),
+        stretchIdx: morphIndex(dict, def.morphs?.stretch),
         state: { id: def.id, length: 1, restLength: 1, activation: def.activation, contraction: 0, stretch: 0, bulge: 0 },
       };
       rt.restLength = this.measure(rt);
@@ -135,7 +142,8 @@ export class MuscleSystem {
       Object.assign(rt.state, { length, contraction: out.contraction, stretch: out.stretch, bulge: out.bulge });
       const inf = rt.mesh?.morphTargetInfluences;
       if (inf) {
-        if (rt.contractIdx >= 0) inf[rt.contractIdx] = out.contractWeight;
+        if (rt.bulgeIdx >= 0) inf[rt.bulgeIdx] = out.bulgeWeight;
+        if (rt.shortenIdx >= 0) inf[rt.shortenIdx] = out.shortenWeight;
         if (rt.stretchIdx >= 0) inf[rt.stretchIdx] = out.stretchWeight;
       }
     }

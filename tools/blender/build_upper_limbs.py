@@ -351,15 +351,19 @@ def add_shape_keys(o, axis, gain_contract, gain_stretch, shorten=0.04):
         i1 = min(nb - 1, i0 + 1)
         return cents[i0].lerp(cents[i1], max(0.0, min(1.0, x - i0)))
 
+    # M2.6：徑向隆起（bulge）與縱向縮短（shorten）拆成兩個獨立 shape key，
+    # 讓 activation 只能驅動 bulge，縱向縮短只由幾何長度驅動。
     o.shape_key_add(name="Basis", from_mix=False)
-    kc = o.shape_key_add(name="contract", from_mix=False)
+    kb = o.shape_key_add(name="bulge", from_mix=False)
+    kh = o.shape_key_add(name="shorten", from_mix=False)
     ks = o.shape_key_add(name="stretch", from_mix=False)
     for i, (v, p) in enumerate(zip(vs, proj)):
         t = (p - lo) / (hi - lo + 1e-9)
         radial = v - center_at(p)
         radial -= axis * radial.dot(axis)
         b = bump(t)
-        kc.data[i].co = v + radial * (gain_contract * b) + axis * ((mid - p) * shorten * b)
+        kb.data[i].co = v + radial * (gain_contract * b)
+        kh.data[i].co = v + axis * ((mid - p) * shorten * b)
         ks.data[i].co = v - radial * (gain_stretch * b)
 
 
@@ -522,8 +526,8 @@ for s, d in sides.items():
             "via_points": via,
             "joints_crossed": [f"{j}_{side}" for j in m["joints"]],
             "function": m["function"], "innervation": m["innervation"],
-            "activation": 0, "deformation_profile": "fusiform_v1",
-            "morphs": {"contract": "contract", "stretch": "stretch"}, "source": SRC,
+            "activation": 0, "deformation_profile": "fusiform_v2",
+            "morphs": {"bulge": "bulge", "shorten": "shorten", "stretch": "stretch"}, "source": SRC,
         }
         if m.get("members"):
             entry["members"] = m["members"]

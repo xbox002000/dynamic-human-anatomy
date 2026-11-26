@@ -25,24 +25,28 @@ export interface DeformInput {
 }
 
 export interface DeformOutput {
-  /** 0..1 縮短比例（幾何） */
+  /** 0..1 縮短比例（純幾何，只由路徑長度決定） */
   contraction: number;
-  /** 0..1 拉長比例（幾何） */
+  /** 0..1 拉長比例（純幾何，只由路徑長度決定） */
   stretch: number;
   /** 0..1 肌腹隆起（幾何縮短 + 主動啟動） */
   bulge: number;
-  /** morph 權重 */
-  contractWeight: number;
+  /** morph 權重：徑向隆起（可由 activation 驅動） */
+  bulgeWeight: number;
+  /** morph 權重：縱向縮短（只由幾何縮短驅動，activation 不得影響） */
+  shortenWeight: number;
+  /** morph 權重：拉長變細 */
   stretchWeight: number;
 }
 
 /**
- * Procedural deformation profile: fusiform_v1
- * - 被動：縮短 → 肌腹變粗；拉長 → 變細
- * - 主動：activation 讓肌腹在任何長度下都更飽滿，且抵銷部分拉長變細
+ * Procedural deformation profile: fusiform_v2（M2.6）
+ * - 縱向長度只由 Pose 決定：shortenWeight = contraction（幾何），與 activation 無關。
+ *   等長收縮（activation 高、長度不變）時肌肉不會變短。
+ * - activation 只影響徑向：肌腹更飽滿（bulge），並抵銷部分拉長變細。
  * 純視覺模型，不代表真實肌力或生理數值。
  */
-export function fusiformV1(i: DeformInput): DeformOutput {
+export function fusiformV2(i: DeformInput): DeformOutput {
   const maxS = i.maxShortening ?? 0.3;
   const maxL = i.maxLengthening ?? 0.2;
   const strain = (i.length - i.restLength) / i.restLength; // <0 縮短
@@ -54,11 +58,16 @@ export function fusiformV1(i: DeformInput): DeformOutput {
     contraction,
     stretch,
     bulge,
-    contractWeight: bulge,
+    bulgeWeight: bulge,
+    shortenWeight: contraction,
     stretchWeight: clamp01(stretch * (1 - 0.6 * a)),
   };
 }
 
+/** 舊名保留為別名，避免既有 manifest 失效 */
+export const fusiformV1 = fusiformV2;
+
 export const DEFORMATION_PROFILES: Record<string, (i: DeformInput) => DeformOutput> = {
-  fusiform_v1: fusiformV1,
+  fusiform_v1: fusiformV2,
+  fusiform_v2: fusiformV2,
 };
