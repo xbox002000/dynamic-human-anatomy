@@ -1,10 +1,15 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
+import { Vector3 } from 'three';
 import type { PoseDefinition } from '@dha/anatomy-schema';
 import { AnatomyEngine, type Layer } from '../core/AnatomyEngine';
 import { PRESET_POSES, loadSavedPoses, storeSavedPoses } from '../state/presets';
 import './app.css';
 
 const base = import.meta.env.BASE_URL;
+const MODELS: Record<string, { glb: string; manifest: string; label: string }> = {
+  zanatomy: { glb: 'arm_zanatomy_l.glb', manifest: 'arm_zanatomy_manifest.json', label: 'Z-Anatomy 左上肢（CC BY-SA 4.0）· 附著點與關節為近似推算值' },
+  sample: { glb: 'arm_sample.glb', manifest: 'arm_manifest.json', label: '程序化樣本 · 尺寸與附著點為 placeholder，非解剖參考數據' },
+};
 const CATEGORY_ZH: Record<string, string> = { muscle: '肌肉', bone: '骨骼', skin: '皮膚', other: '其他' };
 const LAYER_ZH: Record<Layer, string> = { skin: '皮膚', muscle: '肌肉', bone: '骨骼' };
 
@@ -21,8 +26,10 @@ export function App() {
     const host = hostRef.current!;
     const eng = new AnatomyEngine(host);
     let alive = true;
+    const q0 = new URLSearchParams(location.search);
+    const model = MODELS[q0.get('model') ?? 'zanatomy'] ?? MODELS.zanatomy!;
     eng
-      .load(`${base}models/arm_sample.glb`, `${base}data/arm_manifest.json`)
+      .load(`${base}models/${model.glb}`, `${base}data/${model.manifest}`)
       .then(() => {
         if (!alive) return;
         eng.subscribe(force);
@@ -31,6 +38,15 @@ export function App() {
         const preset = PRESET_POSES.find((p) => p.id === q.get('pose'));
         if (preset) eng.applyPose(preset);
         if (q.get('select')) eng.select(q.get('select'));
+        // ?ik=dx,dy,dz：把手部相對目前位置移動（公尺），驗收 IK 用
+        const ik = q.get('ik')?.split(',').map(Number);
+        if (ik && ik.length === 3 && ik.every(Number.isFinite)) {
+          const p = eng.effectorPosition();
+          if (p) {
+            const err = eng.solveIK(p.add(new Vector3(ik[0], ik[1], ik[2])));
+            console.info('[IK] residual', err);
+          }
+        }
         setEngine(eng);
         (window as unknown as { dha: AnatomyEngine }).dha = eng;
       })
@@ -108,7 +124,7 @@ export function App() {
         <div ref={hostRef} className="canvas-host" />
         {!engine && !error && <div className="overlay">載入模型中…</div>}
         {error && <div className="overlay error">載入失敗：{error}</div>}
-        <div className="badge">程序化樣本 · 尺寸與附著點為 placeholder，非解剖參考數據</div>
+        <div className="badge">{(MODELS[new URLSearchParams(location.search).get('model') ?? 'zanatomy'] ?? MODELS.zanatomy!).label}</div>
       </main>
 
       <aside className="panel right">
@@ -167,6 +183,12 @@ export function App() {
                 ));
               })}
               <button onClick={() => engine.pose.reset()}>重設姿勢</button>
+              {engine.hasIK && (
+                <label className="check">
+                  <input type="checkbox" checked={engine.isIKEnabled} onChange={(e) => engine.setIKEnabled(e.target.checked)} />
+                  IK：拖曳橘色把手移動手部{engine.ikError > 0.005 ? `（超出可達範圍 ${(engine.ikError * 100).toFixed(1)} cm）` : ''}
+                </label>
+              )}
             </section>
             <section>
               <h2>肌肉啟動</h2>

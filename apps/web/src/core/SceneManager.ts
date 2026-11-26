@@ -7,6 +7,7 @@ export class SceneManager {
   readonly camera: THREE.PerspectiveCamera;
   readonly renderer: THREE.WebGLRenderer;
   readonly controls: OrbitControls;
+  private grid!: THREE.GridHelper;
   private readonly updaters = new Set<(dt: number) => void>();
   private readonly clock = new THREE.Clock();
   private raf = 0;
@@ -33,6 +34,7 @@ export class SceneManager {
 
     const grid = new THREE.GridHelper(2, 20, 0x2a3038, 0x20252c);
     grid.position.y = -0.3;
+    this.grid = grid;
     this.scene.add(grid);
 
     this.ro = new ResizeObserver(() => this.resize());
@@ -42,12 +44,13 @@ export class SceneManager {
   }
 
   /** 依物件包圍盒設定相機 */
-  frame(obj: THREE.Object3D, dir = new THREE.Vector3(0.3, 0.35, 1)): void {
+  frame(obj: THREE.Object3D, dir = new THREE.Vector3(1, 0.25, 0.7)): void {
     const box = new THREE.Box3().setFromObject(obj);
     const center = box.getCenter(new THREE.Vector3());
     const size = box.getSize(new THREE.Vector3()).length();
     this.controls.target.copy(center);
-    this.camera.position.copy(center).add(dir.normalize().multiplyScalar(size * 1.6));
+    this.grid.position.y = box.min.y - size * 0.05;
+    this.camera.position.copy(center).add(dir.normalize().multiplyScalar(size * 2.1));
     this.camera.near = size / 100;
     this.camera.far = size * 50;
     this.camera.updateProjectionMatrix();

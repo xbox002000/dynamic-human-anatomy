@@ -5,6 +5,7 @@ import { validateManifest } from '@dha/anatomy-schema';
 import { SceneManager } from './SceneManager';
 import { PoseController } from '../skeleton/PoseController';
 import { MuscleSystem } from '../muscles/MuscleSystem';
+import { IKController } from '../skeleton/IKController';
 
 export type Layer = 'skin' | 'muscle' | 'bone';
 
@@ -65,6 +66,20 @@ export class AnatomyEngine {
 
     this.pose = new PoseController(this.root, manifest.joints);
     this.muscles = new MuscleSystem(this.root, manifest.muscles);
+    try {
+      this.ik = new IKController(this.root, this.pose, { effector: 'hand_l', joints: ['shoulder_left', 'elbow_left'] });
+      this.ikHandle = new THREE.Mesh(
+        new THREE.SphereGeometry(0.018, 20, 14),
+        new THREE.MeshBasicMaterial({ color: 0xffb02e, transparent: true, opacity: 0.85, depthTest: false }),
+      );
+      this.ikHandle.renderOrder = 30;
+      this.ikHandle.visible = this.ikEnabled;
+      this.sm.scene.add(this.ikHandle);
+      this.pose.subscribe(() => this.syncHandle());
+      this.syncHandle();
+    } catch (e) {
+      console.warn('[IK] 未啟用', e);
+    }
     this.pose.subscribe(() => this.muscles.update());
     this.muscles.subscribe(() => {
       this.refreshVisuals();
@@ -166,16 +181,89 @@ export class AnatomyEngine {
   // ------------------------------------------------------------ picking
   private bindPicking(el: HTMLElement): void {
     let down = { x: 0, y: 0 };
-    el.addEventListener('pointerdown', (e) => (down = { x: e.clientX, y: e.clientY }));
-    el.addEventListener('pointerup', (e) => {
-      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return; // 拖曳旋轉不算點擊
+    const ndcOf = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
-      const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
-      this.raycaster.setFromCamera(ndc, this.sm.camera);
+      return new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    };
+    el.addEventListener('pointerdown', (e) => {
+      down = { x: e.clientX, y: e.clientY };
+      if (!this.ik || !this.ikHandle || !this.ikEnabled) return;
+      this.raycaster.setFromCamera(ndcOf(e), this.sm.camera);
+      if (this.raycaster.intersectObject(this.ikHandle, false).length) {
+        // 拖曳平面：通過把手、面向相機
+        const n = this.sm.camera.getWorldDirection(new THREE.Vector3()).negate();
+        this.dragPlane.setFromNormalAndCoplanarPoint(n, this.ikHandle.position);
+        this.dragging = true;
+        this.sm.controls.enabled = false;
+        el.setPointerCapture(e.pointerId);
+        e.stopPropagation();
+      }
+    }, { capture: true });
+    el.addEventListener('pointermove', (e) => {
+      if (!this.dragging || !this.ik) return;
+      this.raycaster.setFromCamera(ndcOf(e), this.sm.camera);
+      const hit = this.raycaster.ray.intersectPlane(this.dragPlane, new THREE.Vector3());
+      if (hit) {
+        this.ikTarget.copy(hit);
+        this.ikError = this.ik.solve(hit);
+        this.ikHandle!.position.copy(hit);
+      }
+    });
+    el.addEventListener('pointerup', (e) => {
+      if (this.dragging) {
+        this.dragging = false;
+        this.sm.controls.enabled = true;
+        el.releasePointerCapture(e.pointerId);
+        this.syncHandle();
+        return;
+      }
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return; // 拖曳旋轉不算點擊
+      this.raycaster.setFromCamera(ndcOf(e), this.sm.camera);
       const candidates = [...this.meshes.values()].filter((m) => m.visible && m.userData.category !== 'skin');
       const hit = this.raycaster.intersectObjects(candidates, false)[0];
       this.select(hit ? (hit.object.userData.anatomicalId as string) : null);
     });
+  }
+
+  // ------------------------------------------------------------ IK
+  private ik: IKController | null = null;
+  private ikHandle: THREE.Mesh | null = null;
+  private ikEnabled = true;
+  private dragging = false;
+  private readonly dragPlane = new THREE.Plane();
+  private readonly ikTarget = new THREE.Vector3();
+  /** 最近一次 IK 求解後與目標的距離（公尺），超出可達範圍時 > 0 */
+  ikError = 0;
+
+  get hasIK(): boolean {
+    return !!this.ik;
+  }
+
+  get isIKEnabled(): boolean {
+    return this.ikEnabled;
+  }
+
+  setIKEnabled(v: boolean): void {
+    this.ikEnabled = v;
+    if (this.ikHandle) this.ikHandle.visible = v;
+    this.emit();
+  }
+
+  /** 以程式設定 IK 目標（測試 / 自動化用），回傳誤差 */
+  solveIK(target: THREE.Vector3): number {
+    if (!this.ik) return Infinity;
+    this.ikError = this.ik.solve(target);
+    this.syncHandle();
+    return this.ikError;
+  }
+
+  effectorPosition(): THREE.Vector3 | null {
+    return this.ik ? this.ik.effectorWorld() : null;
+  }
+
+  private syncHandle(): void {
+    if (!this.ik || !this.ikHandle || this.dragging) return;
+    this.ikHandle.position.copy(this.ik.effectorWorld());
   }
 
   // ------------------------------------------------------------ pose / playback

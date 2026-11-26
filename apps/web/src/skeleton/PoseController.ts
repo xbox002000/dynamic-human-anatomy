@@ -59,13 +59,18 @@ export class PoseController {
     return [...(this.joints.get(id)?.angles ?? [])];
   }
 
-  setAngle(id: string, dof: number, deg: number): void {
+  setAngle(id: string, dof: number, deg: number, silent = false): void {
     const j = this.joints.get(id);
     if (!j) return;
     const lim = j.def.limits[dof];
     if (!lim) return;
     j.angles[dof] = THREE.MathUtils.clamp(deg, lim.minDeg, lim.maxDeg);
     this.apply(j);
+    if (!silent) this.emit();
+  }
+
+  /** 批次靜默修改後通知訂閱者 */
+  commit(): void {
     this.emit();
   }
 

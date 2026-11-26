@@ -6,7 +6,7 @@ const elbow = (deg: number, bi: number, tri: number, name: string): PoseDefiniti
   name,
   bones: {},
   joints: { shoulder_left: [0, 0, 0], elbow_left: [deg] },
-  activation: { biceps_brachii_left: bi, triceps_brachii_left: tri },
+  activation: { biceps_brachii_left: bi, brachialis_left: Math.min(1, bi * 1.1), triceps_brachii_left: tri },
 });
 
 export const PRESET_POSES: PoseDefinition[] = [
