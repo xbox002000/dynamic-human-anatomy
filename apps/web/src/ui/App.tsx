@@ -25,6 +25,8 @@ export function App() {
   const [search, setSearch] = useState('');
   const [saved, setSaved] = useState<PoseDefinition[]>(() => loadSavedPoses());
   const [poseName, setPoseName] = useState('');
+  const [showFingers, setShowFingers] = useState(false);
+  const [gripClosure, setGripClosure] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const host = hostRef.current!;
@@ -205,7 +207,7 @@ export function App() {
           <>
             <section>
               <h2>關節（FK）</h2>
-              {engine.pose.jointIds.map((jid) => {
+              {engine.pose.jointIds.filter((jid) => showFingers || engine.pose.getDefinition(jid)?.group !== 'finger').map((jid) => {
                 const def = engine.pose.getDefinition(jid)!;
                 const angles = engine.pose.getAngles(jid);
                 return def.limits.map((l, i) => (
@@ -221,6 +223,33 @@ export function App() {
                   <input type="checkbox" checked={engine.isIKEnabled} onChange={(e) => engine.setIKEnabled(e.target.checked)} />
                   IK：拖曳橘色把手移動手部{engine.ikError > 0.005 ? `（超出可達範圍 ${(engine.ikError * 100).toFixed(1)} cm）` : ''}
                 </label>
+              )}
+              <label className="check">
+                <input type="checkbox" checked={showFingers} onChange={(e) => setShowFingers(e.target.checked)} />
+                顯示手指關節
+              </label>
+              {engine.gripIds.length > 0 && (
+                <>
+                  <h2>握持</h2>
+                  {engine.gripIds.map((gid) => {
+                    const contact = engine.gripContactOf(gid);
+                    const touched = contact ? Object.values(contact).filter(Boolean).length : 0;
+                    const total = contact ? Object.keys(contact).length : 0;
+                    const v = gripClosure[gid] ?? (contact ? 1 : 0);
+                    return (
+                      <label key={gid} className="slider">
+                        <span>{gid.endsWith('left') ? '左手' : '右手'}握拳 {(v * 100).toFixed(0)}%{contact ? ` · 接觸 ${touched}/${total} 指` : ''}</span>
+                        <input type="range" min={0} max={1} step={0.05} value={v} onChange={(e) => { const c = +e.target.value; setGripClosure({ ...gripClosure, [gid]: c }); engine.setGrip(gid, c); }} />
+                      </label>
+                    );
+                  })}
+                  {engine.loads().map((l) => (
+                    <p key={l.id} className="muted small">
+                      {l.side === 'left' ? '左' : '右'}肘外力矩 {l.torque.toFixed(1)} N·m（{l.massKg} kg × g × 水平力臂 {(l.leverArm * 100).toFixed(1)} cm）
+                    </p>
+                  ))}
+                  {engine.loads().length > 0 && <p className="muted small">靜力近似：只算啞鈴重量，未含前臂自重與加速度。</p>}
+                </>
               )}
             </section>
             <section>

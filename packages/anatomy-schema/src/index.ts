@@ -76,6 +76,35 @@ export interface JointDefinition {
   restDeg: Vec3;
   limits: JointAxisLimit[];
   mirrorOf?: string;
+  /** rest pose 模型空間的關節中心 */
+  center?: Vec3;
+  /** UI 分組（例如 finger：手指關節預設收合顯示） */
+  group?: string;
+}
+
+/** 手指鏈：關節與骨段依近端→遠端排列 */
+export interface FingerChain {
+  id: string;
+  name_zh: string;
+  joints: string[];
+  segments: { bone: string; head: Vec3; tail: Vec3 }[];
+}
+
+/** 握持幾何：握把（圓柱）在 rest pose 模型空間的位置，綁在 bone 上 */
+export interface GripDefinition {
+  id: string;
+  side: Side;
+  bone: string;
+  center: Vec3;
+  /** 握把軸向（單位向量） */
+  axis: Vec3;
+  palmNormal: Vec3;
+  /** 握把半徑（公尺） */
+  radius: number;
+  /** 手指軟組織半徑（骨段中心線到皮膚，公尺） */
+  fingerRadius: number;
+  confidence: Confidence;
+  fingers: FingerChain[];
 }
 
 export interface BoneTransform {
@@ -141,6 +170,8 @@ export interface AnatomyManifest {
   muscles: MuscleDefinition[];
   /** 非肌肉結構（骨骼等）的顯示名稱 */
   structures?: { id: string; name: string; name_zh: string; category: string; side: Side }[];
+  /** 手部握持幾何（每側一筆） */
+  grips?: GripDefinition[];
 }
 
 /** 執行期肌肉狀態（Deformation 輸入） */

@@ -1,5 +1,6 @@
 {
-  "$comment": "雙側上肢資產定義：Z-Anatomy 原始名稱（不含 .l/.r 後綴）→ 本專案結構。由 tools/pipeline/upper-limbs.mjs 與 tools/blender/build_upper_limbs.py 共用。",
+  "$comment": "雙側上肢資產定義：Z-Anatomy 原始名稱（不含 .l/.r 後綴）→ 本專案結構。由 tools/pipeline/upper-limbs.mjs 與 tools/blender/build_upper_limbs.py 共用。fingers 定義手指骨段（每段一根骨骼、一個關節）；insertion 可指向手指骨段（如 middle_dist），insertion_at 為沿該骨段的比例。",
+  "grip": { "radius": 0.015, "palm_offset": 0.016, "$comment": "握把半徑與掌心軟組織厚度（公尺，approximate）；握把中心 = MCP 頭連線中點向掌側偏移 radius + palm_offset" },
   "bones": {
     "humerus": { "name": "Humerus", "name_zh": "肱骨", "bone": "upper", "parts": ["Humerus"] },
     "radius": { "name": "Radius", "name_zh": "橈骨", "bone": "fore", "parts": ["Radius"] },
@@ -17,6 +18,28 @@
         "Middle phalanx of second finger of hand", "Middle phalanx of third finger of hand", "Middle phalanx of fourth finger of hand", "Middle phalanx of fifth finger of hand",
         "Distal phalanx of first finger of hand", "Distal phalanx of second finger of hand", "Distal phalanx of third finger of hand", "Distal phalanx of fourth finger of hand", "Distal phalanx of fifth finger of hand"
       ]
+    }
+  },
+  "fingers": {
+    "thumb": {
+      "name_zh": "拇指", "base": null, "joints": ["cmc", "mcp", "ip"],
+      "segments": [["thumb_mc", "First metacarpal bone"], ["thumb_prox", "Proximal phalanx of first finger of hand"], ["thumb_dist", "Distal phalanx of first finger of hand"]]
+    },
+    "index": {
+      "name_zh": "食指", "base": "Second metacarpal bone", "joints": ["mcp", "pip", "dip"],
+      "segments": [["index_prox", "Proximal phalanx of second finger of hand"], ["index_mid", "Middle phalanx of second finger of hand"], ["index_dist", "Distal phalanx of second finger of hand"]]
+    },
+    "middle": {
+      "name_zh": "中指", "base": "Third metacarpal bone", "joints": ["mcp", "pip", "dip"],
+      "segments": [["middle_prox", "Proximal phalanx of third finger of hand"], ["middle_mid", "Middle phalanx of third finger of hand"], ["middle_dist", "Distal phalanx of third finger of hand"]]
+    },
+    "ring": {
+      "name_zh": "無名指", "base": "Fourth metacarpal bone", "joints": ["mcp", "pip", "dip"],
+      "segments": [["ring_prox", "Proximal phalanx of fourth finger of hand"], ["ring_mid", "Middle phalanx of fourth finger of hand"], ["ring_dist", "Distal phalanx of fourth finger of hand"]]
+    },
+    "little": {
+      "name_zh": "小指", "base": "Fifth metacarpal bone", "joints": ["mcp", "pip", "dip"],
+      "segments": [["little_prox", "Proximal phalanx of fifth finger of hand"], ["little_mid", "Middle phalanx of fifth finger of hand"], ["little_dist", "Distal phalanx of fifth finger of hand"]]
     }
   },
   "muscles": [
@@ -66,14 +89,25 @@
       "function": ["前臂旋前", "輔助肘關節屈曲"], "innervation": "Median nerve (C6–C7)"
     },
     {
-      "id": "forearm_flexors", "name": "Forearm Flexor Group", "name_zh": "前臂屈肌群", "name_latin": "Musculi flexores antebrachii",
-      "parts": ["Flexor carpi radialis", "Palmaris longus muscle", "Humeral head of flexor carpi ulnaris", "Ulnar head of flexor carpi ulnaris", "Humero-ulnar head of flexor digitorum superficialis", "Radial head of flexor digitorum superficialis", "Flexor digitorum profundus", "Flexor pollicis longus"],
+      "id": "wrist_flexors", "name": "Wrist Flexor Group", "name_zh": "腕屈肌群", "name_latin": "Musculi flexores carpi",
+      "parts": ["Flexor carpi radialis", "Palmaris longus muscle", "Humeral head of flexor carpi ulnaris", "Ulnar head of flexor carpi ulnaris"],
       "architecture": "pennate", "segment": "fore", "region": "forearm",
       "origin": "upper", "insertion": "hand", "via": { "bone": "fore", "at": "wrist", "side": "anterior" },
       "joints": ["elbow", "wrist"], "elbow_blend": [-0.005, 0.02], "wrist_blend": [-0.015, 0.015],
       "shape": [0.22, 0.12],
-      "function": ["腕關節屈曲", "手指屈曲（握力）", "橈側 / 尺側偏移"], "innervation": "Median nerve；尺側腕屈肌與屈指深肌尺側半為 Ulnar nerve",
-      "members": ["橈側腕屈肌", "掌長肌", "尺側腕屈肌", "屈指淺肌", "屈指深肌", "屈拇長肌"]
+      "function": ["腕關節屈曲", "橈側 / 尺側偏移", "握持時對抗伸肌、穩定腕關節"], "innervation": "Median nerve；尺側腕屈肌為 Ulnar nerve",
+      "members": ["橈側腕屈肌", "掌長肌", "尺側腕屈肌"]
+    },
+    {
+      "id": "finger_flexors", "name": "Extrinsic Finger Flexors", "name_zh": "屈指肌群（握力）", "name_latin": "Musculi flexores digitorum",
+      "parts": ["Humero-ulnar head of flexor digitorum superficialis", "Radial head of flexor digitorum superficialis", "Flexor digitorum profundus", "Flexor pollicis longus"],
+      "architecture": "pennate", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "middle_dist", "insertion_at": 0.5, "insertion_offset": 0.006,
+      "via": { "bone": "fore", "at": "wrist", "side": "anterior" },
+      "joints": ["elbow", "wrist", "middle_mcp", "middle_pip", "middle_dip"], "elbow_blend": [-0.005, 0.02], "wrist_blend": [-0.015, 0.015],
+      "shape": [0.25, 0.12],
+      "function": ["手指屈曲：握力的主要來源（屈指深肌屈 DIP、屈指淺肌屈 PIP）", "屈拇長肌屈拇指 IP", "輔助腕關節屈曲"], "innervation": "Median nerve；屈指深肌尺側半為 Ulnar nerve",
+      "members": ["屈指淺肌", "屈指深肌", "屈拇長肌"]
     },
     {
       "id": "forearm_extensors", "name": "Forearm Extensor Group", "name_zh": "前臂伸肌群", "name_latin": "Musculi extensores antebrachii",
@@ -82,7 +116,7 @@
       "origin": "upper", "insertion": "hand", "via": { "bone": "fore", "at": "wrist", "side": "posterior" },
       "joints": ["elbow", "wrist"], "elbow_blend": [-0.005, 0.02], "wrist_blend": [-0.015, 0.015],
       "shape": [0.22, 0.12],
-      "function": ["腕關節伸展", "手指伸展", "握持時穩定腕關節"], "innervation": "Radial nerve（深支 / 後骨間神經）",
+      "function": ["腕關節伸展", "手指伸展", "握持時與屈肌共同收縮、把腕維持在微背伸（握力最佳位置）"], "innervation": "Radial nerve（深支 / 後骨間神經）",
       "members": ["橈側腕長伸肌", "橈側腕短伸肌", "伸指肌", "尺側腕伸肌"]
     },
     {
@@ -102,6 +136,54 @@
       "joints": ["elbow"], "elbow_blend": [-0.005, 0.01],
       "shape": [0.2, 0.1],
       "function": ["輔助肘關節伸展", "穩定肘關節"], "innervation": "Radial nerve (C7–C8)"
+    },
+    {
+      "id": "thenar_muscles", "name": "Thenar Muscles", "name_zh": "魚際肌群", "name_latin": "Musculi thenaris",
+      "parts": ["Abductor pollicis brevis", "Superficial head of flexor pollicis brevis", "Deep head of flexor pollicis brevis", "Opponens pollicis muscle"],
+      "architecture": "flat", "segment": "hand", "region": "hand",
+      "origin": "hand", "insertion": "thumb_prox", "insertion_at": 0.15, "via": null,
+      "joints": ["thumb_cmc", "thumb_mcp"],
+      "shape": [0.18, 0.08],
+      "function": ["拇指對掌、外展、屈曲", "包握時把拇指壓在握把另一側"], "innervation": "Median nerve（返支）；屈拇短肌深頭為 Ulnar nerve",
+      "members": ["拇短展肌", "拇短屈肌", "拇對掌肌"]
+    },
+    {
+      "id": "adductor_pollicis", "name": "Adductor Pollicis", "name_zh": "拇內收肌", "name_latin": "Musculus adductor pollicis",
+      "parts": ["Oblique head of adductor pollicis", "Transverse head of adductor pollicis"],
+      "architecture": "flat", "segment": "hand", "region": "hand",
+      "origin": "hand", "insertion": "thumb_prox", "insertion_at": 0.1, "via": null,
+      "joints": ["thumb_cmc", "thumb_mcp"],
+      "shape": [0.18, 0.08],
+      "function": ["拇指內收：把握把夾在拇指與食指之間"], "innervation": "Ulnar nerve（深支）"
+    },
+    {
+      "id": "hypothenar_muscles", "name": "Hypothenar Muscles", "name_zh": "小魚際肌群", "name_latin": "Musculi hypothenaris",
+      "parts": ["Abductor digiti minimi of hand", "Flexor digiti minimi of hand", "Opponens digiti minimi muscle of hand"],
+      "architecture": "flat", "segment": "hand", "region": "hand",
+      "origin": "hand", "insertion": "little_prox", "insertion_at": 0.15, "via": null,
+      "joints": ["little_mcp"],
+      "shape": [0.18, 0.08],
+      "function": ["小指屈曲、外展與對掌", "加深掌心凹弧，讓手掌包住握把"], "innervation": "Ulnar nerve（深支）",
+      "members": ["小指展肌", "小指短屈肌", "小指對掌肌"]
+    },
+    {
+      "id": "lumbricals", "name": "Lumbricals of Hand", "name_zh": "蚓狀肌", "name_latin": "Musculi lumbricales manus",
+      "parts": ["Lumbrical muscles of hand"],
+      "architecture": "fusiform", "segment": "hand", "region": "hand",
+      "origin": "hand", "insertion": "middle_prox", "insertion_at": 0.4, "via": null,
+      "joints": ["middle_mcp", "middle_pip"],
+      "shape": [0.15, 0.08],
+      "function": ["MCP 屈曲、指間關節伸展", "協調屈指肌腱的握合順序"], "innervation": "第 1–2 條 Median nerve；第 3–4 條 Ulnar nerve"
+    },
+    {
+      "id": "interossei", "name": "Interossei of Hand", "name_zh": "骨間肌", "name_latin": "Musculi interossei manus",
+      "parts": ["Dorsal interossei muscles of hand", "Palmar interossei muscles"],
+      "architecture": "bipennate", "segment": "hand", "region": "hand",
+      "origin": "hand", "insertion": "middle_prox", "insertion_at": 0.3, "via": null,
+      "joints": ["middle_mcp"],
+      "shape": [0.15, 0.08],
+      "function": ["手指外展（背側）/ 內收（掌側）", "輔助 MCP 屈曲，握持時穩定手指"], "innervation": "Ulnar nerve（深支）",
+      "members": ["背側骨間肌", "掌側骨間肌"]
     }
   ]
 }

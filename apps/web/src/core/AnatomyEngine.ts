@@ -6,6 +6,7 @@ import { SceneManager } from './SceneManager';
 import { PoseController } from '../skeleton/PoseController';
 import { MuscleSystem } from '../muscles/MuscleSystem';
 import { IKController } from '../skeleton/IKController';
+import { GripController, elbowLoadTorque } from '../skeleton/GripController';
 import { expandBilateral, roleFor, sampleMotion } from '../animation/motionSampler';
 
 export type Layer = 'skin' | 'muscle' | 'bone';
@@ -67,6 +68,14 @@ export class AnatomyEngine {
 
     this.pose = new PoseController(this.root, manifest.joints);
     this.muscles = new MuscleSystem(this.root, manifest.muscles);
+    this.grips.clear();
+    for (const g of manifest.grips ?? []) {
+      try {
+        this.grips.set(g.id, new GripController(this.root, this.pose, g));
+      } catch (e) {
+        console.warn('[Grip] 未啟用', g.id, e);
+      }
+    }
     try {
       this.ik = new IKController(this.root, this.pose, { effector: 'hand_l', joints: ['shoulder_left', 'elbow_left'] });
       this.ikHandle = new THREE.Mesh(
@@ -416,24 +425,74 @@ export class AnatomyEngine {
     }
   }
 
-  /** 依動作定義在指定骨骼上掛道具（啞鈴） */
+  /** 依動作定義在指定骨骼上掛道具（啞鈴）：握把放進掌心的握持圓柱，手指逐關節收合直到接觸 */
   private attachProps(): void {
     for (const p of this.props) p.removeFromParent();
     this.props.length = 0;
+    this.heldMass.clear();
+    this.gripContact.clear();
+    for (const g of this.grips.values()) g.release();
     for (const def of this.motion?.props ?? []) {
       if (def.type !== 'dumbbell' || !def.bone) continue;
       const bone = this.root.getObjectByName(def.bone);
       if (!(bone instanceof THREE.Bone)) continue;
-      const db = makeDumbbell();
-      // 放在手骨中段（握把在掌心），握把軸垂直於前臂並朝向前方
-      bone.updateMatrixWorld(true);
-      const child = bone.children.find((c) => c instanceof THREE.Bone);
-      const len = child ? child.position.length() : 0.08;
-      db.position.set(0, len * 0.45, 0);
-      db.rotation.set(0, 0, Math.PI / 2);
-      bone.add(db);
+      const grip = [...this.grips.values()].find((g) => g.def.bone === def.bone);
+      const db = makeDumbbell(grip?.def.radius ?? 0.015);
+      if (grip) {
+        db.position.copy(grip.centerLocal);
+        db.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), grip.axisLocal);
+        bone.add(db);
+        const res = grip.solve(1);
+        this.gripContact.set(grip.def.id, res.contact);
+        this.heldMass.set(grip.def.id, def.massKg ?? 0);
+      } else {
+        bone.updateMatrixWorld(true);
+        const child = bone.children.find((c) => c instanceof THREE.Bone);
+        const len = child ? child.position.length() : 0.08;
+        db.position.set(0, len * 0.45, 0);
+        db.rotation.set(0, 0, Math.PI / 2);
+        bone.add(db);
+      }
       this.props.push(db);
     }
+  }
+
+  // ------------------------------------------------------------ grip / load
+  private readonly grips = new Map<string, GripController>();
+  private readonly gripContact = new Map<string, Record<string, boolean>>();
+  private readonly heldMass = new Map<string, number>();
+
+  get gripIds(): string[] {
+    return [...this.grips.keys()];
+  }
+
+  /** 手動握拳 / 張開（closure 0..1）；沒有道具時握把為虛擬圓柱 */
+  setGrip(id: string, closure: number): void {
+    const g = this.grips.get(id);
+    if (!g) return;
+    if (closure <= 0) g.release();
+    else this.gripContact.set(id, g.solve(closure).contact);
+    this.emit();
+  }
+
+  gripContactOf(id: string): Record<string, boolean> | undefined {
+    return this.gripContact.get(id);
+  }
+
+  /** 每側：握持重量對肘關節的外力矩（N·m）與水平力臂（m） */
+  loads(): { id: string; side: string; massKg: number; torque: number; leverArm: number }[] {
+    const out: { id: string; side: string; massKg: number; torque: number; leverArm: number }[] = [];
+    for (const [id, g] of this.grips) {
+      const mass = this.heldMass.get(id) ?? 0;
+      if (!mass) continue;
+      const elbow = this.manifest.joints.find((j) => j.id === `elbow_${g.def.side}`);
+      const fore = elbow ? this.root.getObjectByName(elbow.bone) : null;
+      if (!fore) continue;
+      const ew = fore.getWorldPosition(new THREE.Vector3());
+      const { center } = g.handleWorld();
+      out.push({ id, side: g.def.side, massKg: mass, ...elbowLoadTorque(mass, ew, center) });
+    }
+    return out;
   }
 
   subscribe(fn: () => void): () => void {
@@ -453,12 +512,12 @@ export class AnatomyEngine {
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
 /** 啞鈴（Y 軸為握把方向，單位：公尺） */
-function makeDumbbell(): THREE.Group {
+function makeDumbbell(radius = 0.015): THREE.Group {
   const g = new THREE.Group();
   g.name = 'prop_dumbbell';
   const metal = new THREE.MeshStandardMaterial({ color: 0x3a3f47, metalness: 0.7, roughness: 0.35 });
   const grip = new THREE.MeshStandardMaterial({ color: 0x8a9099, metalness: 0.8, roughness: 0.25 });
-  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.14, 20), grip);
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.14, 20), grip);
   g.add(handle);
   for (const y of [-0.1, 0.1]) {
     const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 28), metal);

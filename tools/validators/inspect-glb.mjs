@@ -6,6 +6,7 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { MeshoptDecoder } from 'meshoptimizer';
 
 const [file, pattern] = process.argv.slice(2);
+const LIMIT = Number(process.env.INSPECT_LIMIT || 80);
 await MeshoptDecoder.ready;
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({ 'meshopt.decoder': MeshoptDecoder });
 const doc = await io.read(file);
@@ -31,5 +32,5 @@ for (const n of nodes) {
   const s = n.getScale();
   const r = n.getRotation();
   console.log(`${name}\t tris=${tris}\t min=${min.map((v) => v.toFixed(3))}\t max=${max.map((v) => v.toFixed(3))}\t T=${t.map((v) => v.toFixed(3))} R=${r.map((v) => v.toFixed(2))} S=${s.map((v) => v.toFixed(3))}\t parent=${n.getParentNode()?.getName() ?? '-'}\t extras=${JSON.stringify(n.getExtras())}`);
-  if (++shown >= 80) { console.log('... (truncated)'); break; }
+  if (++shown >= LIMIT) { console.log('... (truncated)'); break; }
 }
