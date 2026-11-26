@@ -118,6 +118,14 @@ export function App() {
             只顯示選取項目
           </label>
         )}
+        <h2>關於 / 授權</h2>
+        <p className="muted about">
+          程式碼 MIT · 模型 CC BY-SA 4.0
+          <br />
+          幾何：<a href="https://github.com/Z-Anatomy/Models-of-human-anatomy" target="_blank" rel="noreferrer">Z-Anatomy</a>（CC BY-SA 4.0），衍生自 BodyParts3D © DBCLS（CC BY-SA 2.1 JP）
+          <br />
+          教學視覺化用途，非臨床數據。
+        </p>
       </aside>
 
       <main className="viewport">

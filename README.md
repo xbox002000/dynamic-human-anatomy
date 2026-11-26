@@ -42,3 +42,14 @@ docs/                         座標規範、授權盤點
 `Pose（關節角度）→ 骨骼 → 肌肉路徑長度 → deformation profile + Activation → morphTargetInfluences`
 
 Pose 與 Activation 是兩個獨立輸入（藍圖 §1.2）。
+
+## 授權（完全公開）
+
+- 程式碼：**MIT**，見 [LICENSE](LICENSE)
+- 3D 模型與解剖資料：**CC BY-SA 4.0**，見 [LICENSE-ASSETS.md](LICENSE-ASSETS.md)
+  - 幾何來自 [Z-Anatomy](https://github.com/Z-Anatomy/Models-of-human-anatomy)（CC BY-SA 4.0），衍生自 BodyParts3D © DBCLS（CC BY-SA 2.1 JP）
+- 授權盤點與禁用來源：[docs/anatomy/source-license-inventory.md](docs/anatomy/source-license-inventory.md)
+
+## 免責聲明
+
+本專案用於教學與視覺化。附著點、關節中心與活動範圍為由模型推算或教科書近似值；肌肉啟動與形變為視覺模型，**不代表真實生理或臨床數據**。

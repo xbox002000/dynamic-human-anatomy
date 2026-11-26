@@ -74,6 +74,8 @@ button.primary { background: #1d4f63; border-color: #2a7591; margin-top: 8px; }
 .dot.bone { background: var(--bone); }
 .dot.skin { background: var(--skin); }
 .check { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
+.about { font-size: 11px; line-height: 1.6; }
+.about a { color: var(--accent); }
 
 .info dl { display: grid; grid-template-columns: 72px 1fr; gap: 6px 8px; margin: 10px 0; }
 .info dt { color: var(--muted); }

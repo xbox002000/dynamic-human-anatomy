@@ -9,7 +9,7 @@
 | Z-Anatomy 左上肢 Rig | `apps/web/public/models/arm_zanatomy_l.glb` | Z-Anatomy 幾何（經 anatomy-explorer 轉檔），DHA 加骨架/權重/shape keys | **CC BY-SA 4.0**（ShareAlike 繼承） | 骨：humerus/radius/ulna；肌：biceps（長+短頭合併）、brachialis、triceps（三頭合併） |
 | Z-Anatomy 左上肢 manifest | `apps/web/public/data/arm_zanatomy_manifest.json` | 由 `build_arm_zanatomy.py` 從網格端點推算 | CC BY-SA 4.0 | 關節中心、軸向、附著點皆為 `approximate` |
 | 程序化手臂樣本 | `apps/web/public/models/arm_sample.glb`、`arm_manifest.json` | 本專案腳本產生 | project-internal | placeholder，僅供管線測試（`?model=sample`） |
-| 專案程式碼 | `apps/`、`packages/`、`tools/` | 本專案 | 待定（尚未選擇授權） | 與資產授權分離 |
+| 專案程式碼 | `apps/`、`packages/`、`tools/`、`tests/` | 本專案 | **MIT** | 與資產授權分離 |
 
 ## 2. 外部來源（已核對）
 
@@ -34,10 +34,11 @@
 4. 原始下載放 `assets/source/`（gitignore，不入版控），可用 `pnpm model:zanatomy:fetch` 重建。
 5. 不從 anatomy-explorer 複製程式碼；`tools/model_optimizer/extract-parts.mjs` 為本專案自寫。
 
-## 4. 商用前檢查清單
+## 4. 公開發佈檢查清單（決策：完全公開）
 
 - [x] 上肢 Rig 每個 mesh 可追溯到單一授權（CC BY-SA 4.0 / BodyParts3D）
-- [ ] 選定專案程式碼授權
-- [ ] UI 加入 Attribution / About 頁
-- [ ] `assets/licenses/` 收錄 CC BY-SA 4.0、CC BY-SA 2.1 JP 授權全文
-- [ ] 決定商業模式是否相容 SA（衍生模型必須公開同授權）
+- [x] 專案程式碼授權：MIT（`LICENSE`）
+- [x] 模型與解剖資料授權：CC BY-SA 4.0（`LICENSE-ASSETS.md`）
+- [x] `assets/licenses/` 收錄 CC BY-SA 4.0、CC BY-SA 2.1 JP、Z-Anatomy License、anatomy-explorer CREDITS
+- [x] UI 內提供出處（資訊面板 + 「關於 / 授權」）
+- [x] 禁止引入 NC 子來源（內耳、腎臟）——與「完全公開、不限用途」立場衝突
