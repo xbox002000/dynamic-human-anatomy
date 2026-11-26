@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dha.local/schema/muscle.schema.json",
+  "title": "MuscleDefinition",
+  "type": "object",
+  "required": ["id", "name", "name_zh", "side", "region", "architecture", "mesh", "origin", "insertion", "via_points", "joints_crossed", "activation", "deformation_profile", "source"],
+  "$defs": {
+    "vec3": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+    "confidence": { "enum": ["placeholder", "approximate", "literature", "measured"] },
+    "attachment": {
+      "type": "object",
+      "required": ["bone", "position", "confidence"],
+      "properties": {
+        "bone": { "type": "string" },
+        "position": { "$ref": "#/$defs/vec3" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    }
+  },
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "name": { "type": "string" },
+    "name_zh": { "type": "string" },
+    "name_latin": { "type": "string" },
+    "side": { "enum": ["left", "right", "midline"] },
+    "region": { "type": "string" },
+    "architecture": { "enum": ["fusiform", "pennate", "bipennate", "multipennate", "flat", "circular", "multihead"] },
+    "mesh": { "type": "string" },
+    "origin": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/attachment" } },
+    "insertion": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/attachment" } },
+    "via_points": { "type": "array", "items": { "$ref": "#/$defs/attachment" } },
+    "joints_crossed": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "function": { "type": "array", "items": { "type": "string" } },
+    "innervation": { "type": "string" },
+    "activation": { "type": "number", "minimum": 0, "maximum": 1 },
+    "deformation_profile": { "type": "string" },
+    "morphs": {
+      "type": "object",
+      "properties": {
+        "contract": { "type": "string" },
+        "stretch": { "type": "string" },
+        "bulge": { "type": "string" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["dataset", "license"],
+      "properties": {
+        "dataset": { "type": "string" },
+        "license": { "type": "string" },
+        "attribution": { "type": "string" },
+        "url": { "type": "string" },
+        "derivedFrom": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,163 @@
+/**
+ * @dha/anatomy-schema
+ * 共用解剖資料模型：靜態解剖資產與動態人體 Rig 透過 anatomicalId 對應。
+ * 設計原則：Pose / Activation / Deformation 三者資料來源分離。
+ */
+
+export type Side = 'left' | 'right' | 'midline';
+
+export type Vec3 = [number, number, number];
+export type Quat = [number, number, number, number];
+
+/** 資料可信度：未經量測或可靠模擬的數值不得標示為真實生理數值 */
+export type Confidence = 'placeholder' | 'approximate' | 'literature' | 'measured';
+
+export interface SourceInfo {
+  dataset: string;
+  license: string;
+  attribution?: string;
+  url?: string;
+  derivedFrom?: string;
+}
+
+/** 附著點：座標以所屬骨骼的局部空間表示，才能隨姿勢移動 */
+export interface AttachmentPoint {
+  bone: string;
+  position: Vec3;
+  confidence: Confidence;
+}
+
+export type MuscleArchitecture = 'fusiform' | 'pennate' | 'bipennate' | 'multipennate' | 'flat' | 'circular' | 'multihead';
+
+export interface MuscleDefinition {
+  id: string;
+  name: string;
+  name_zh: string;
+  name_latin?: string;
+  side: Side;
+  region: string;
+  architecture: MuscleArchitecture;
+  /** 對應 GLB 中的 mesh 名稱 */
+  mesh: string;
+  origin: AttachmentPoint[];
+  insertion: AttachmentPoint[];
+  via_points: AttachmentPoint[];
+  joints_crossed: string[];
+  function?: string[];
+  innervation?: string;
+  /** 預設啟動程度 0..1（執行期狀態另存於 MuscleState） */
+  activation: number;
+  deformation_profile: string;
+  /** 該 mesh 上的 morph target 名稱對應 */
+  morphs?: {
+    contract?: string;
+    stretch?: string;
+    bulge?: string;
+  };
+  source: SourceInfo;
+}
+
+export interface JointAxisLimit {
+  axis: 'x' | 'y' | 'z';
+  minDeg: number;
+  maxDeg: number;
+  confidence: Confidence;
+  /** 旋轉軸（rest pose 模型空間的單位向量）；正角度 = 繞此向量右手旋轉 */
+  vector?: Vec3;
+  label?: string;
+}
+
+export interface JointDefinition {
+  id: string;
+  bone: string;
+  side: Side;
+  restDeg: Vec3;
+  limits: JointAxisLimit[];
+  mirrorOf?: string;
+}
+
+export interface BoneTransform {
+  /** 局部旋轉 quaternion (x, y, z, w) */
+  rotation: Quat;
+  position?: Vec3;
+  scale?: Vec3;
+}
+
+export interface PoseDefinition {
+  id: string;
+  name: string;
+  bones: Record<string, BoneTransform>;
+  /** 關節角度（度），順序對應 JointDefinition.limits；可由此重建 bones */
+  joints?: Record<string, number[]>;
+  /** 啟動與姿勢分離存放，可選 */
+  activation?: Record<string, number>;
+}
+
+export interface PoseKeyframe {
+  time: number;
+  pose: PoseDefinition;
+}
+
+export interface MotionClip {
+  id: string;
+  name: string;
+  duration: number;
+  keyframes: PoseKeyframe[];
+}
+
+export interface AnatomyManifest {
+  version: string;
+  coordinateSystem: {
+    up: 'Y';
+    forward: '+Z';
+    unit: 'meter';
+    handedness: 'right';
+  };
+  joints: JointDefinition[];
+  muscles: MuscleDefinition[];
+}
+
+/** 執行期肌肉狀態（Deformation 輸入） */
+export interface MuscleState {
+  id: string;
+  length: number;
+  restLength: number;
+  activation: number;
+  /** 0 = 靜止長度, >0 = 縮短比例 */
+  contraction: number;
+  /** >0 = 被拉長比例 */
+  stretch: number;
+  bulge: number;
+}
+
+export function clamp01(v: number): number {
+  return v < 0 ? 0 : v > 1 ? 1 : v;
+}
+
+export function validateMuscle(m: MuscleDefinition): string[] {
+  const errs: string[] = [];
+  if (!/^[a-z0-9_]+$/.test(m.id)) errs.push(`${m.id}: id 必須是 snake_case`);
+  if (m.side !== 'midline' && !m.id.endsWith(`_${m.side}`)) errs.push(`${m.id}: id 後綴與 side 不一致`);
+  if (m.origin.length === 0) errs.push(`${m.id}: 缺少 origin`);
+  if (m.insertion.length === 0) errs.push(`${m.id}: 缺少 insertion`);
+  if (m.joints_crossed.length === 0) errs.push(`${m.id}: 缺少 joints_crossed`);
+  if (m.activation < 0 || m.activation > 1) errs.push(`${m.id}: activation 超出 0..1`);
+  if (!m.source?.license) errs.push(`${m.id}: 缺少 license`);
+  return errs;
+}
+
+export function validateManifest(man: AnatomyManifest): string[] {
+  const errs: string[] = [];
+  const ids = new Set<string>();
+  const jointIds = new Set(man.joints.map((j) => j.id));
+  for (const m of man.muscles) {
+    if (ids.has(m.id)) errs.push(`重複 id: ${m.id}`);
+    ids.add(m.id);
+    errs.push(...validateMuscle(m));
+    for (const j of m.joints_crossed) if (!jointIds.has(j)) errs.push(`${m.id}: 未定義關節 ${j}`);
+  }
+  for (const j of man.joints) {
+    for (const l of j.limits) if (l.minDeg > l.maxDeg) errs.push(`${j.id}: ${l.axis} min > max`);
+  }
+  return errs;
+}

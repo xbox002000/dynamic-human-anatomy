@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.blend1
+.vite/
+coverage/
+assets/source/**
+!assets/source/.gitkeep
+assets/working/**/*.blend1
+.DS_Store
+Thumbs.db
+tmp-*.png
+
