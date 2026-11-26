@@ -3,13 +3,17 @@ import { Vector3 } from 'three';
 import type { PoseDefinition } from '@dha/anatomy-schema';
 import { AnatomyEngine, type Layer } from '../core/AnatomyEngine';
 import { PRESET_POSES, loadSavedPoses, storeSavedPoses } from '../state/presets';
+import { ROLE_ZH } from '../animation/motionSampler';
 import './app.css';
 
 const base = import.meta.env.BASE_URL;
 const MODELS: Record<string, { glb: string; manifest: string; label: string }> = {
+  upper: { glb: 'upper_limbs.glb', manifest: 'upper_limbs_manifest.json', label: 'Z-Anatomy 雙側上肢（CC BY-SA 4.0）· 附著點、關節與啟動曲線為近似值' },
   zanatomy: { glb: 'arm_zanatomy_l.glb', manifest: 'arm_zanatomy_manifest.json', label: 'Z-Anatomy 左上肢（CC BY-SA 4.0）· 附著點與關節為近似推算值' },
   sample: { glb: 'arm_sample.glb', manifest: 'arm_manifest.json', label: '程序化樣本 · 尺寸與附著點為 placeholder，非解剖參考數據' },
 };
+const DEFAULT_MODEL = 'upper';
+const MOTIONS = [{ id: 'dumbbell_curl', label: '站姿啞鈴二頭彎舉' }];
 const CATEGORY_ZH: Record<string, string> = { muscle: '肌肉', bone: '骨骼', skin: '皮膚', other: '其他' };
 const LAYER_ZH: Record<Layer, string> = { skin: '皮膚', muscle: '肌肉', bone: '骨骼' };
 
@@ -27,7 +31,7 @@ export function App() {
     const eng = new AnatomyEngine(host);
     let alive = true;
     const q0 = new URLSearchParams(location.search);
-    const model = MODELS[q0.get('model') ?? 'zanatomy'] ?? MODELS.zanatomy!;
+    const model = MODELS[q0.get('model') ?? DEFAULT_MODEL] ?? MODELS[DEFAULT_MODEL]!;
     eng
       .load(`${base}models/${model.glb}`, `${base}data/${model.manifest}`)
       .then(() => {
@@ -49,6 +53,15 @@ export function App() {
         }
         setEngine(eng);
         (window as unknown as { dha: AnatomyEngine }).dha = eng;
+        // ?motion=dumbbell_curl&t=1.1 ：載入情境動作並跳到指定時間（驗收 / 分享用）
+        const mid = q.get('motion');
+        if (mid) {
+          eng.loadMotion(`${base}data/motions/${mid}.json`).then(() => {
+            const t = Number(q.get('t'));
+            if (Number.isFinite(t) && q.has('t')) eng.seekMotion(t);
+            else eng.playMotion();
+          });
+        }
       })
       .catch((e: unknown) => setError(String(e)));
     return () => {
@@ -98,7 +111,7 @@ export function App() {
             <li key={s.id}>
               <button className={s.id === sel ? 'active' : ''} onClick={() => engine?.select(s.id)}>
                 <span className={`dot ${s.category}`} />
-                {engine?.muscles.getDefinition(s.id)?.name_zh ?? s.id}
+                {engine?.displayName(s.id)}
                 <small>{CATEGORY_ZH[s.category] ?? s.category}</small>
               </button>
             </li>
@@ -132,7 +145,7 @@ export function App() {
         <div ref={hostRef} className="canvas-host" />
         {!engine && !error && <div className="overlay">載入模型中…</div>}
         {error && <div className="overlay error">載入失敗：{error}</div>}
-        <div className="badge">{(MODELS[new URLSearchParams(location.search).get('model') ?? 'zanatomy'] ?? MODELS.zanatomy!).label}</div>
+        <div className="badge">{(MODELS[new URLSearchParams(location.search).get('model') ?? DEFAULT_MODEL] ?? MODELS[DEFAULT_MODEL]!).label}</div>
       </main>
 
       <aside className="panel right">
@@ -146,6 +159,18 @@ export function App() {
               {muscleDef.name} · <i>{muscleDef.name_latin}</i>
             </p>
             <dl>
+              {engine.roleOf(muscleDef.id) && (
+                <>
+                  <dt>動作角色</dt>
+                  <dd><span className={`role ${engine.roleOf(muscleDef.id)}`}>{ROLE_ZH[engine.roleOf(muscleDef.id)!]}</span></dd>
+                </>
+              )}
+              {muscleDef.members && (
+                <>
+                  <dt>包含</dt>
+                  <dd>{muscleDef.members.join('、')}</dd>
+                </>
+              )}
               <dt>ID</dt>
               <dd><code>{muscleDef.id}</code></dd>
               <dt>起點</dt>
@@ -211,13 +236,44 @@ export function App() {
               })}
             </section>
             <section>
+              <h2>情境動作</h2>
+              <div className="chips">
+                {MOTIONS.map((m) => (
+                  <button key={m.id} className={engine.activeMotion?.id === m.id ? 'primary' : ''} onClick={() => engine.loadMotion(`${base}data/motions/${m.id}.json`).then(() => engine.playMotion())}>
+                    {m.label}
+                  </button>
+                ))}
+                {engine.activeMotion && <button onClick={() => engine.setMotion(null)}>結束動作</button>}
+              </div>
+              {engine.activeMotion && (
+                <div className="motion">
+                  <div className="row">
+                    <button onClick={() => (engine.motionState.playing ? engine.pauseMotion() : engine.playMotion())}>{engine.motionState.playing ? '❚❚ 暫停' : '▶ 播放'}</button>
+                    <select value={engine.motionState.speed} onChange={(e) => engine.setMotionSpeed(+e.target.value)} aria-label="播放速度">
+                      {[0.25, 0.5, 1, 1.5].map((s) => (
+                        <option key={s} value={s}>{s}×</option>
+                      ))}
+                    </select>
+                    <span className="muted">{engine.motionState.time.toFixed(1)} / {engine.activeMotion.duration.toFixed(1)} s</span>
+                  </div>
+                  <input className="timeline" type="range" min={0} max={engine.activeMotion.duration} step={0.01} value={engine.motionState.time} onChange={(e) => { engine.pauseMotion(); engine.seekMotion(+e.target.value); }} />
+                  <p className="phase">{engine.currentPhase ?? ''}</p>
+                  <label className="check">
+                    <input type="checkbox" checked={engine.showRoles} onChange={(e) => { engine.showRoles = e.target.checked; engine.seekMotion(engine.motionState.time); }} />
+                    以顏色標示肌肉角色
+                  </label>
+                  <p className="legend roles">
+                    <span className="lg agonist" />主動肌 <span className="lg synergist" />協同肌 <span className="lg antagonist" />拮抗肌 <span className="lg stabilizer" />穩定肌
+                  </p>
+                  <p className="muted small">啟動曲線依教學文獻定性描述（{engine.activeMotion.activationConfidence}），非 EMG 量測。</p>
+                </div>
+              )}
               <h2>驗收姿勢</h2>
               <div className="chips">
                 {PRESET_POSES.map((p) => (
-                  <button key={p.id} onClick={() => engine.applyPose(p)}>{p.name}</button>
+                  <button key={p.id} onClick={() => { engine.setMotion(null); engine.applyPose(p); }}>{p.name}</button>
                 ))}
               </div>
-              <button className="primary" disabled={engine.isPlaying} onClick={() => engine.play(PRESET_POSES)}>▶ 播放 0→130°</button>
             </section>
             <section>
               <h2>儲存 / 重播</h2>

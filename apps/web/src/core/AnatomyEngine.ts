@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import type { AnatomyManifest, PoseDefinition } from '@dha/anatomy-schema';
+import type { AnatomyManifest, MotionClip, MuscleRole, PoseDefinition } from '@dha/anatomy-schema';
 import { validateManifest } from '@dha/anatomy-schema';
 import { SceneManager } from './SceneManager';
 import { PoseController } from '../skeleton/PoseController';
 import { MuscleSystem } from '../muscles/MuscleSystem';
 import { IKController } from '../skeleton/IKController';
+import { expandBilateral, roleFor, sampleMotion } from '../animation/motionSampler';
 
 export type Layer = 'skin' | 'muscle' | 'bone';
 
@@ -115,6 +116,10 @@ export class AnatomyEngine {
     return [...this.meshes.entries()].map(([id, m]) => ({ id, category: String(m.userData.category ?? 'other') }));
   }
 
+  displayName(id: string): string {
+    return this.muscles?.getDefinition(id)?.name_zh ?? this.manifest?.structures?.find((s) => s.id === id)?.name_zh ?? id;
+  }
+
   // ------------------------------------------------------------ layers
   getLayers(): Record<Layer, boolean> {
     return { ...this.layers };
@@ -146,6 +151,8 @@ export class AnatomyEngine {
       if (st) {
         // 啟動程度以紅→亮橘的自發光顯示（視覺化，不代表真實肌電）
         mat.emissive.setRGB(0.55 * st.activation, 0.18 * st.activation, 0);
+        const role = this.showRoles ? this.roleOf(id) : undefined;
+        if (role) mat.emissive.lerp(ROLE_COLOR[role], 0.35 + 0.4 * st.activation);
       }
       if (id === this.selected) mat.emissive.add(new THREE.Color(0.1, 0.22, 0.35));
     }
@@ -273,8 +280,9 @@ export class AnatomyEngine {
   }
 
   applyPose(p: PoseDefinition): void {
-    this.pose.applyPose(p);
-    if (p.activation) this.muscles.setActivations(p.activation);
+    if (p.joints) this.pose.setAngles(expandBilateral(p.joints, this.pose.jointIds));
+    else this.pose.applyPose(p);
+    if (p.activation) this.muscles.setActivations(expandBilateral(p.activation, this.muscles.ids));
   }
 
   play(frames: PoseDefinition[], secondsPerSegment = 1.2): void {
@@ -293,6 +301,15 @@ export class AnatomyEngine {
   }
 
   private tick(dt: number): void {
+    if (this.motion && this.motionPlaying) {
+      this.motionTime += dt * this.motionSpeed;
+      if (!this.motion.loop && this.motionTime >= this.motion.duration) {
+        this.motionTime = this.motion.duration;
+        this.motionPlaying = false;
+      }
+      this.applyMotionSample();
+      return;
+    }
     const pb = this.playback;
     if (!pb) return;
     pb.t += dt * pb.speed;
@@ -322,6 +339,103 @@ export class AnatomyEngine {
     this.muscles.setActivations(act);
   }
 
+  // ------------------------------------------------------------ motion clips（情境動作）
+  private motion: MotionClip | null = null;
+  private motionTime = 0;
+  private motionPlaying = false;
+  private motionSpeed = 1;
+  private readonly props: THREE.Object3D[] = [];
+  private lastEmit = 0;
+  showRoles = true;
+  currentPhase: string | undefined;
+
+  get activeMotion(): MotionClip | null {
+    return this.motion;
+  }
+
+  get motionState(): { time: number; playing: boolean; speed: number } {
+    return { time: this.motionTime, playing: this.motionPlaying, speed: this.motionSpeed };
+  }
+
+  async loadMotion(url: string): Promise<MotionClip> {
+    const clip = (await fetch(url).then((r) => r.json())) as MotionClip;
+    this.setMotion(clip);
+    return clip;
+  }
+
+  setMotion(clip: MotionClip | null): void {
+    this.motion = clip;
+    this.motionTime = 0;
+    this.motionPlaying = false;
+    this.playback = null;
+    this.attachProps();
+    if (clip) this.applyMotionSample();
+    this.refreshVisuals();
+    this.emit();
+  }
+
+  playMotion(): void {
+    if (!this.motion) return;
+    if (!this.motion.loop && this.motionTime >= this.motion.duration) this.motionTime = 0;
+    this.motionPlaying = true;
+    this.emit();
+  }
+
+  pauseMotion(): void {
+    this.motionPlaying = false;
+    this.emit();
+  }
+
+  seekMotion(t: number): void {
+    if (!this.motion) return;
+    this.motionTime = THREE.MathUtils.clamp(t, 0, this.motion.duration);
+    this.applyMotionSample();
+    this.emit();
+  }
+
+  setMotionSpeed(s: number): void {
+    this.motionSpeed = s;
+    this.emit();
+  }
+
+  roleOf(muscleId: string): MuscleRole | undefined {
+    return roleFor(this.motion, muscleId);
+  }
+
+  private applyMotionSample(): void {
+    if (!this.motion) return;
+    const s = sampleMotion(this.motion, this.motionTime);
+    this.currentPhase = s.phase;
+    this.pose.setAngles(expandBilateral(s.joints, this.pose.jointIds));
+    this.muscles.setActivations(expandBilateral(s.activation, this.muscles.ids));
+    // UI 節流：約 15 Hz 通知一次（3D 每幀更新）
+    const now = performance.now();
+    if (now - this.lastEmit > 66) {
+      this.lastEmit = now;
+      this.emit();
+    }
+  }
+
+  /** 依動作定義在指定骨骼上掛道具（啞鈴） */
+  private attachProps(): void {
+    for (const p of this.props) p.removeFromParent();
+    this.props.length = 0;
+    for (const def of this.motion?.props ?? []) {
+      if (def.type !== 'dumbbell' || !def.bone) continue;
+      const bone = this.root.getObjectByName(def.bone);
+      if (!(bone instanceof THREE.Bone)) continue;
+      const db = makeDumbbell();
+      // 放在手骨中段（握把在掌心），握把軸垂直於前臂並朝向前方
+      bone.updateMatrixWorld(true);
+      const child = bone.children.find((c) => c instanceof THREE.Bone);
+      const len = child ? child.position.length() : 0.08;
+      db.position.set(0, len * 0.45, 0);
+      db.rotation.set(0, 0, Math.PI / 2);
+      bone.add(db);
+      this.props.push(db);
+    }
+  }
+
   subscribe(fn: () => void): () => void {
     this.listeners.add(fn);
     return () => this.listeners.delete(fn);
@@ -337,3 +451,28 @@ export class AnatomyEngine {
 }
 
 const smooth = (t: number) => t * t * (3 - 2 * t);
+
+/** 啞鈴（Y 軸為握把方向，單位：公尺） */
+function makeDumbbell(): THREE.Group {
+  const g = new THREE.Group();
+  g.name = 'prop_dumbbell';
+  const metal = new THREE.MeshStandardMaterial({ color: 0x3a3f47, metalness: 0.7, roughness: 0.35 });
+  const grip = new THREE.MeshStandardMaterial({ color: 0x8a9099, metalness: 0.8, roughness: 0.25 });
+  const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.14, 20), grip);
+  g.add(handle);
+  for (const y of [-0.1, 0.1]) {
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 28), metal);
+    plate.position.y = y;
+    g.add(plate);
+  }
+  g.traverse((o) => (o.userData.category = 'prop'));
+  return g;
+}
+
+const ROLE_COLOR: Record<MuscleRole, THREE.Color> = {
+  agonist: new THREE.Color(0.75, 0.3, 0.0),
+  synergist: new THREE.Color(0.55, 0.45, 0.0),
+  antagonist: new THREE.Color(0.0, 0.25, 0.6),
+  stabilizer: new THREE.Color(0.2, 0.35, 0.2),
+  stretched: new THREE.Color(0.45, 0.0, 0.55),
+};

@@ -1,12 +1,15 @@
 import type { PoseDefinition } from '@dha/anatomy-schema';
 
-/** 藍圖 Phase 3 驗收姿勢：伸直 / 45° / 90° / 130°（肘屈曲） */
+/**
+ * 藍圖 Phase 3 驗收姿勢：伸直 / 45° / 90° / 130°（肘屈曲）
+ * 鍵不含側別，引擎會展開到所有存在的側別（單側模型只套用左側）。
+ */
 const elbow = (deg: number, bi: number, tri: number, name: string): PoseDefinition => ({
   id: `pose_elbow_${deg}`,
   name,
   bones: {},
-  joints: { shoulder_left: [0, 0, 0], elbow_left: [deg] },
-  activation: { biceps_brachii_left: bi, brachialis_left: Math.min(1, bi * 1.1), triceps_brachii_left: tri },
+  joints: { shoulder: [0, 0, 0], elbow: [deg] },
+  activation: { biceps_brachii: bi, brachialis: Math.min(1, bi * 1.1), brachioradialis: bi * 0.6, triceps_brachii: tri },
 });
 
 export const PRESET_POSES: PoseDefinition[] = [

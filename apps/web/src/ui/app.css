@@ -76,6 +76,18 @@ button.primary { background: #1d4f63; border-color: #2a7591; margin-top: 8px; }
 .check { display: flex; gap: 6px; align-items: center; margin: 4px 0; }
 .about { font-size: 11px; line-height: 1.6; }
 .about a { color: var(--accent); }
+.timeline { width: 100%; accent-color: #ffb02e; margin: 6px 0 2px; }
+.phase { margin: 2px 0 6px; color: #ffcf7a; min-height: 1.2em; }
+.small { font-size: 11px; }
+select { background: #232934; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; font: inherit; }
+.row { align-items: center; }
+.lg.agonist { background: #ff7a1a; } .lg.synergist { background: #d9b400; } .lg.antagonist { background: #2f7bff; } .lg.stabilizer { background: #4f9a5a; }
+.role { padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+.role.agonist { background: #4a2a10; color: #ffae6b; }
+.role.synergist { background: #3e3510; color: #f0d55c; }
+.role.antagonist { background: #142a4a; color: #8fb8ff; }
+.role.stabilizer { background: #1d3320; color: #8fd59a; }
+.role.stretched { background: #351a3d; color: #e09bff; }
 
 .info dl { display: grid; grid-template-columns: 72px 1fr; gap: 6px 8px; margin: 10px 0; }
 .info dt { color: var(--muted); }

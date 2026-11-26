@@ -1,0 +1,107 @@
+{
+  "$comment": "雙側上肢資產定義：Z-Anatomy 原始名稱（不含 .l/.r 後綴）→ 本專案結構。由 tools/pipeline/upper-limbs.mjs 與 tools/blender/build_upper_limbs.py 共用。",
+  "bones": {
+    "humerus": { "name": "Humerus", "name_zh": "肱骨", "bone": "upper", "parts": ["Humerus"] },
+    "radius": { "name": "Radius", "name_zh": "橈骨", "bone": "fore", "parts": ["Radius"] },
+    "ulna": { "name": "Ulna", "name_zh": "尺骨", "bone": "fore", "parts": ["Ulna"] },
+    "scapula": { "name": "Scapula", "name_zh": "肩胛骨", "bone": "shoulder", "parts": ["Scapula"] },
+    "clavicle": { "name": "Clavicle", "name_zh": "鎖骨", "bone": "shoulder", "parts": ["Clavicle"] },
+    "hand_skeleton": {
+      "name": "Bones of hand",
+      "name_zh": "手部骨骼",
+      "bone": "hand",
+      "parts": [
+        "Scaphoid bone", "Lunate bone", "Triquetrum bone", "Pisiform bone", "Trapezium bone", "Trapezoid bone", "Capitate bone", "Hamate bone",
+        "First metacarpal bone", "Second metacarpal bone", "Third metacarpal bone", "Fourth metacarpal bone", "Fifth metacarpal bone",
+        "Proximal phalanx of first finger of hand", "Proximal phalanx of second finger of hand", "Proximal phalanx of third finger of hand", "Proximal phalanx of fourth finger of hand", "Proximal phalanx of fifth finger of hand",
+        "Middle phalanx of second finger of hand", "Middle phalanx of third finger of hand", "Middle phalanx of fourth finger of hand", "Middle phalanx of fifth finger of hand",
+        "Distal phalanx of first finger of hand", "Distal phalanx of second finger of hand", "Distal phalanx of third finger of hand", "Distal phalanx of fourth finger of hand", "Distal phalanx of fifth finger of hand"
+      ]
+    }
+  },
+  "muscles": [
+    {
+      "id": "biceps_brachii", "name": "Biceps Brachii", "name_zh": "肱二頭肌", "name_latin": "Musculus biceps brachii",
+      "parts": ["Long head of biceps brachii", "Short head of biceps brachii"],
+      "architecture": "fusiform", "segment": "upper", "region": "upper_arm",
+      "origin": "shoulder", "insertion": "fore", "via": { "bone": "upper", "at": "elbow", "side": "anterior" },
+      "joints": ["shoulder", "elbow"], "elbow_blend": [-0.035, 0.012],
+      "shape": [0.45, 0.18],
+      "function": ["肘關節屈曲", "前臂旋後", "輔助肩關節屈曲"], "innervation": "Musculocutaneous nerve (C5–C6)"
+    },
+    {
+      "id": "brachialis", "name": "Brachialis", "name_zh": "肱肌", "name_latin": "Musculus brachialis",
+      "parts": ["Brachialis muscle"],
+      "architecture": "fusiform", "segment": "upper", "region": "upper_arm",
+      "origin": "upper", "insertion": "fore", "via": { "bone": "upper", "at": "elbow", "side": "anterior" },
+      "joints": ["elbow"], "elbow_blend": [-0.03, 0.008],
+      "shape": [0.3, 0.15],
+      "function": ["肘關節屈曲（主要屈肘肌）"], "innervation": "Musculocutaneous nerve (C5–C6)；外側部分常見橈神經分支"
+    },
+    {
+      "id": "triceps_brachii", "name": "Triceps Brachii", "name_zh": "肱三頭肌", "name_latin": "Musculus triceps brachii",
+      "parts": ["Long head of triceps brachii", "Lateral head of triceps brachii", "Medial head of triceps brachii"],
+      "architecture": "multihead", "segment": "upper", "region": "upper_arm",
+      "origin": "shoulder", "insertion": "fore", "via": { "bone": "upper", "at": "elbow", "side": "posterior" },
+      "joints": ["shoulder", "elbow"], "elbow_blend": [-0.015, 0.004],
+      "shape": [0.3, 0.15],
+      "function": ["肘關節伸展", "長頭輔助肩關節伸展與內收"], "innervation": "Radial nerve (C6–C8)"
+    },
+    {
+      "id": "brachioradialis", "name": "Brachioradialis", "name_zh": "肱橈肌", "name_latin": "Musculus brachioradialis",
+      "parts": ["Brachioradialis muscle"],
+      "architecture": "fusiform", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "fore", "via": { "bone": "fore", "at": "elbow", "side": "anterior" },
+      "joints": ["elbow"], "elbow_blend": [-0.01, 0.03],
+      "shape": [0.3, 0.15],
+      "function": ["肘關節屈曲（前臂中立位時最有力）"], "innervation": "Radial nerve (C5–C6)"
+    },
+    {
+      "id": "pronator_teres", "name": "Pronator Teres", "name_zh": "旋前圓肌", "name_latin": "Musculus pronator teres",
+      "parts": ["Superficial head of pronator teres", "Deep head of pronator teres"],
+      "architecture": "fusiform", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "fore", "via": null,
+      "joints": ["elbow"], "elbow_blend": [-0.005, 0.02],
+      "shape": [0.25, 0.12],
+      "function": ["前臂旋前", "輔助肘關節屈曲"], "innervation": "Median nerve (C6–C7)"
+    },
+    {
+      "id": "forearm_flexors", "name": "Forearm Flexor Group", "name_zh": "前臂屈肌群", "name_latin": "Musculi flexores antebrachii",
+      "parts": ["Flexor carpi radialis", "Palmaris longus muscle", "Humeral head of flexor carpi ulnaris", "Ulnar head of flexor carpi ulnaris", "Humero-ulnar head of flexor digitorum superficialis", "Radial head of flexor digitorum superficialis", "Flexor digitorum profundus", "Flexor pollicis longus"],
+      "architecture": "pennate", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "hand", "via": { "bone": "fore", "at": "wrist", "side": "anterior" },
+      "joints": ["elbow", "wrist"], "elbow_blend": [-0.005, 0.02], "wrist_blend": [-0.015, 0.015],
+      "shape": [0.22, 0.12],
+      "function": ["腕關節屈曲", "手指屈曲（握力）", "橈側 / 尺側偏移"], "innervation": "Median nerve；尺側腕屈肌與屈指深肌尺側半為 Ulnar nerve",
+      "members": ["橈側腕屈肌", "掌長肌", "尺側腕屈肌", "屈指淺肌", "屈指深肌", "屈拇長肌"]
+    },
+    {
+      "id": "forearm_extensors", "name": "Forearm Extensor Group", "name_zh": "前臂伸肌群", "name_latin": "Musculi extensores antebrachii",
+      "parts": ["Extensor carpi radialis longus", "Extensor carpi radialis brevis", "Extensor digitorum", "Humeral head of extensor carpi ulnaris", "Ulnar head of extensor carpi ulnaris"],
+      "architecture": "pennate", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "hand", "via": { "bone": "fore", "at": "wrist", "side": "posterior" },
+      "joints": ["elbow", "wrist"], "elbow_blend": [-0.005, 0.02], "wrist_blend": [-0.015, 0.015],
+      "shape": [0.22, 0.12],
+      "function": ["腕關節伸展", "手指伸展", "握持時穩定腕關節"], "innervation": "Radial nerve（深支 / 後骨間神經）",
+      "members": ["橈側腕長伸肌", "橈側腕短伸肌", "伸指肌", "尺側腕伸肌"]
+    },
+    {
+      "id": "supinator", "name": "Supinator", "name_zh": "旋後肌", "name_latin": "Musculus supinator",
+      "parts": ["Supinator"],
+      "architecture": "flat", "segment": "fore", "region": "forearm",
+      "origin": "upper", "insertion": "fore", "via": null,
+      "joints": ["elbow"], "elbow_blend": [-0.005, 0.015],
+      "shape": [0.2, 0.1],
+      "function": ["前臂旋後"], "innervation": "Radial nerve（深支）"
+    },
+    {
+      "id": "anconeus", "name": "Anconeus", "name_zh": "肘肌", "name_latin": "Musculus anconeus",
+      "parts": ["Anconeus muscle"],
+      "architecture": "flat", "segment": "fore", "region": "elbow",
+      "origin": "upper", "insertion": "fore", "via": null,
+      "joints": ["elbow"], "elbow_blend": [-0.005, 0.01],
+      "shape": [0.2, 0.1],
+      "function": ["輔助肘關節伸展", "穩定肘關節"], "innervation": "Radial nerve (C7–C8)"
+    }
+  ]
+}

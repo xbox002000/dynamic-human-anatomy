@@ -44,6 +44,8 @@ export interface MuscleDefinition {
   via_points: AttachmentPoint[];
   joints_crossed: string[];
   function?: string[];
+  /** 肌群包含的個別肌肉（群組 mesh 時使用） */
+  members?: string[];
   innervation?: string;
   /** 預設啟動程度 0..1（執行期狀態另存於 MuscleState） */
   activation: number;
@@ -93,16 +95,38 @@ export interface PoseDefinition {
   activation?: Record<string, number>;
 }
 
-export interface PoseKeyframe {
-  time: number;
-  pose: PoseDefinition;
+export interface MotionKeyframe {
+  /** 秒 */
+  t: number;
+  /** 關節角度（度），只需列出有變化的關節 */
+  joints?: Record<string, number[]>;
+  /** 肌肉啟動 0..1（與姿勢分離的獨立通道） */
+  activation?: Record<string, number>;
+  label?: string;
 }
 
+export type MuscleRole = 'agonist' | 'synergist' | 'antagonist' | 'stabilizer' | 'stretched';
+
+export interface PropDefinition {
+  type: 'dumbbell' | 'mat';
+  bone?: string;
+  massKg?: number;
+}
+
+/** 情境動作：姿勢關鍵影格 + 啟動曲線 + 肌肉角色 */
 export interface MotionClip {
   id: string;
   name: string;
+  name_zh: string;
+  description?: string;
   duration: number;
-  keyframes: PoseKeyframe[];
+  loop?: boolean;
+  keyframes: MotionKeyframe[];
+  roles?: Record<string, MuscleRole>;
+  props?: PropDefinition[];
+  /** 啟動曲線依據 */
+  activationConfidence: Confidence;
+  phases?: { t0: number; t1: number; label: string }[];
 }
 
 export interface AnatomyManifest {
@@ -115,6 +139,8 @@ export interface AnatomyManifest {
   };
   joints: JointDefinition[];
   muscles: MuscleDefinition[];
+  /** 非肌肉結構（骨骼等）的顯示名稱 */
+  structures?: { id: string; name: string; name_zh: string; category: string; side: Side }[];
 }
 
 /** 執行期肌肉狀態（Deformation 輸入） */
