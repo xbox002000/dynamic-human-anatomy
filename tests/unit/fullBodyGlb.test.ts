@@ -13,6 +13,7 @@ import type { AnatomyManifest } from '../../packages/anatomy-schema/src/index';
 import { validateManifest } from '../../packages/anatomy-schema/src/index';
 import { PoseController } from '../../apps/web/src/skeleton/PoseController';
 import { MuscleSystem } from '../../apps/web/src/muscles/MuscleSystem';
+import { FootPlant } from '../../apps/web/src/skeleton/FootPlant';
 
 const ROOT = path.resolve(__dirname, '../..');
 const GLB = path.join(ROOT, 'apps/web/public/models/full_body.glb');
@@ -33,7 +34,10 @@ async function rig() {
 function byCategory(scene: THREE.Object3D) {
   const bones: THREE.SkinnedMesh[] = [];
   const statics: THREE.SkinnedMesh[] = [];
-  const staticIds = new Set((manifest.structures ?? []).filter((s) => (s as { static?: boolean }).static).map((s) => s.id));
+  // M4：靜態肌肉與「由靜態升級的動態肌肉」(bound) 權重同源，一併驗證不脫離骨骼
+  const staticIds = new Set(
+    (manifest.structures ?? []).filter((s) => (s as { static?: boolean; bound?: boolean }).static || (s as { bound?: boolean }).bound).map((s) => s.id),
+  );
   scene.traverse((o) => {
     if (!(o instanceof THREE.SkinnedMesh)) return;
     const id = (o.userData.anatomicalId as string) ?? (o.parent?.userData.anatomicalId as string) ?? o.name;
@@ -189,9 +193,11 @@ describe('full_body.glb 結構', () => {
     }
   });
 
-  it('上肢動態肌肉（30 條，含三個 morph）仍完整', async () => {
+  it('動態肌肉：上肢 30 條 + 軀幹下肢 24 條（M4），皆含三個 morph', async () => {
     const { scene } = await rig();
-    expect(manifest.muscles.length).toBe(30);
+    expect(manifest.muscles.length).toBe(54);
+    const lower = manifest.muscles.filter((m) => !['upper_arm', 'forearm', 'hand'].includes((m as { region?: string }).region ?? ''));
+    expect(lower.length).toBeGreaterThanOrEqual(24);
     const muscles = new MuscleSystem(scene, manifest.muscles);
     for (const id of muscles.ids) {
       const dict = muscles.getMesh(id)?.morphTargetDictionary ?? {};
@@ -239,6 +245,87 @@ describe('全身擺姿方向', () => {
     const l0 = pos(scene, 'hand_l');
     pose.setAngles({ thoracic: [0, 0, 30] });
     expect(pos(scene, 'hand_l').distanceTo(l0)).toBeGreaterThan(0.05);
+  });
+});
+
+describe('M4：軀幹與下肢動態肌肉的路徑長度隨姿勢變化', () => {
+  const state = (muscles: MuscleSystem, id: string) => {
+    muscles.update();
+    const s = muscles.getState(id)!;
+    expect(s, id).toBeTruthy();
+    return s;
+  };
+  const cases: [string, Record<string, number[]>, string[], string[]][] = [
+    // [名稱, 姿勢, 應縮短, 應拉長]
+    ['膝屈曲 100°', { knee_left: [100] }, ['hamstrings_left'], ['quadriceps_left']],
+    ['深蹲（髖 100° + 膝 120°）', { hip_left: [100, 0, 0], knee_left: [120], ankle_left: [15, 0] }, [], ['quadriceps_left', 'gluteus_maximus_left']],
+    ['髖屈曲 90°', { hip_left: [90, 0, 0] }, ['iliopsoas_left'], ['hamstrings_left', 'gluteus_maximus_left']],
+    ['軀幹前屈 40°', { lumbar: [40, 0, 0], thoracic: [20, 0, 0] }, ['rectus_abdominis_left', 'rectus_abdominis_right'], ['erector_spinae_left', 'erector_spinae_right']],
+  ];
+  for (const [name, angles, shorter, longer] of cases) {
+    it(name, async () => {
+      const { scene, pose } = await rig();
+      const muscles = new MuscleSystem(scene, manifest.muscles);
+      const rest: Record<string, number> = {};
+      for (const id of [...shorter, ...longer]) rest[id] = state(muscles, id).length;
+      pose.setAngles(angles);
+      for (const id of shorter) expect(state(muscles, id).length, `${id} 應縮短`).toBeLessThan(rest[id]! * 0.97);
+      for (const id of longer) expect(state(muscles, id).length, `${id} 應拉長`).toBeGreaterThan(rest[id]! * 1.03);
+    });
+  }
+});
+
+describe('M4：腳掌著地', () => {
+  const SQUAT = POSES.squat!;
+  it('off：骨盆固定，深蹲時雙腳離地', async () => {
+    const { scene, pose } = await rig();
+    const fp = new FootPlant(scene);
+    fp.mode = 'off';
+    pose.postApply = () => fp.apply();
+    pose.setAngles(SQUAT);
+    expect(fp.support('left')!.now.y - fp.groundY).toBeGreaterThan(0.05);
+  });
+
+  it('both：深蹲時最低支撐點貼地、雙腳中點不滑動；無外展時每腳滑動 < 1 cm', async () => {
+    const { scene, pose } = await rig();
+    const fp = new FootPlant(scene);
+    pose.postApply = () => fp.apply();
+    // 含 10° 外展：兩腳對稱張開（骨盆平移無法抵銷，需腿部 IK），但中點應不動
+    pose.setAngles(SQUAT);
+    let l = fp.support('left')!, r = fp.support('right')!;
+    expect(Math.min(l.now.y, r.now.y) - fp.groundY).toBeCloseTo(0, 3);
+    const mid = l.now.clone().add(r.now).sub(l.rest).sub(r.rest).multiplyScalar(0.5);
+    expect(Math.hypot(mid.x, mid.z)).toBeLessThan(0.005);
+    // 無外展的深蹲：每隻腳都幾乎不滑動
+    pose.reset();
+    pose.setAngles({ ...SQUAT, hip_left: [100, 0, 0], hip_right: [100, 0, 0] });
+    l = fp.support('left')!;
+    r = fp.support('right')!;
+    for (const s of [l, r]) expect(Math.hypot(s.now.x - s.rest.x, s.now.z - s.rest.z)).toBeLessThan(0.01);
+    // 骨盆確實下降
+    expect((scene.getObjectByName('pelvis') as THREE.Bone).position.length()).toBeGreaterThan(0);
+  });
+
+  it('left：單腳站立抬右腿，左腳支撐點完全不動、右腳離地', async () => {
+    const { scene, pose } = await rig();
+    const fp = new FootPlant(scene);
+    fp.mode = 'left';
+    pose.postApply = () => fp.apply();
+    pose.setAngles({ hip_right: [90, 0, 0], knee_right: [90], lumbar: [10, 0, 0] });
+    const l = fp.support('left')!;
+    expect(l.now.distanceTo(l.rest)).toBeLessThan(0.005);
+    expect(fp.support('right')!.now.y - fp.groundY).toBeGreaterThan(0.1);
+  });
+
+  it('reset 後骨盆回到 rest 位置', async () => {
+    const { scene, pose } = await rig();
+    const pelvis = scene.getObjectByName('pelvis') as THREE.Bone;
+    const p0 = pelvis.position.clone();
+    const fp = new FootPlant(scene);
+    pose.postApply = () => fp.apply();
+    pose.setAngles(SQUAT);
+    pose.reset();
+    expect(pelvis.position.distanceTo(p0)).toBeLessThan(1e-3);
   });
 });
 

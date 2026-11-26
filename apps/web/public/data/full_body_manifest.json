@@ -3546,6 +3546,1474 @@
         "背側骨間肌",
         "掌側骨間肌"
       ]
+    },
+    {
+      "id": "gluteus_maximus_left",
+      "name": "Gluteus Maximus",
+      "name_zh": "左側臀大肌",
+      "name_latin": "Musculus gluteus maximus",
+      "side": "left",
+      "region": "hip",
+      "architecture": "flat",
+      "mesh": "gluteus_maximus_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.06832,
+            0.96839,
+            -0.06907
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.07066,
+            0.7606,
+            -0.02595
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.07066,
+            0.8506,
+            -0.07595
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_left"
+      ],
+      "function": [
+        "髖關節伸展",
+        "髖關節外旋"
+      ],
+      "innervation": "Inferior gluteal nerve (L5–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "gluteus_maximus_right",
+      "name": "Gluteus Maximus",
+      "name_zh": "右側臀大肌",
+      "name_latin": "Musculus gluteus maximus",
+      "side": "right",
+      "region": "hip",
+      "architecture": "flat",
+      "mesh": "gluteus_maximus_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.06616,
+            0.96552,
+            -0.07094
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.07078,
+            0.76105,
+            -0.02569
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.07078,
+            0.85105,
+            -0.07569
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_right"
+      ],
+      "function": [
+        "髖關節伸展",
+        "髖關節外旋"
+      ],
+      "innervation": "Inferior gluteal nerve (L5–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "gluteus_medius_minimus_left",
+      "name": "Gluteus Medius and Minimus",
+      "name_zh": "左側臀中肌與臀小肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "hip",
+      "architecture": "flat",
+      "mesh": "gluteus_medius_minimus_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.09174,
+            0.9915,
+            -0.03446
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.14635,
+            0.83857,
+            -0.02068
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "hip_left"
+      ],
+      "function": [
+        "髖關節外展",
+        "單腳站立時穩定骨盆"
+      ],
+      "innervation": "Superior gluteal nerve (L4–S1)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "gluteus_medius_minimus_right",
+      "name": "Gluteus Medius and Minimus",
+      "name_zh": "右側臀中肌與臀小肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "hip",
+      "architecture": "flat",
+      "mesh": "gluteus_medius_minimus_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.09336,
+            0.99193,
+            -0.03306
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.14638,
+            0.83871,
+            -0.02083
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "hip_right"
+      ],
+      "function": [
+        "髖關節外展",
+        "單腳站立時穩定骨盆"
+      ],
+      "innervation": "Superior gluteal nerve (L4–S1)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "iliopsoas_left",
+      "name": "Iliopsoas",
+      "name_zh": "左側髂腰肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "hip",
+      "architecture": "fusiform",
+      "mesh": "iliopsoas_left",
+      "origin": [
+        {
+          "bone": "lumbar",
+          "position": [
+            0.01721,
+            1.14113,
+            -0.00846
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.09946,
+            0.78046,
+            -0.018
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.07066,
+            0.8806,
+            0.02405
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "lumbar",
+        "hip_left"
+      ],
+      "function": [
+        "髖關節屈曲"
+      ],
+      "innervation": "Femoral nerve (L1–L3) 與腰神經叢分支",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "iliopsoas_right",
+      "name": "Iliopsoas",
+      "name_zh": "右側髂腰肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "hip",
+      "architecture": "fusiform",
+      "mesh": "iliopsoas_right",
+      "origin": [
+        {
+          "bone": "lumbar",
+          "position": [
+            -0.01784,
+            1.14067,
+            -0.00878
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.09871,
+            0.78081,
+            -0.01795
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.07078,
+            0.88105,
+            0.02431
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "lumbar",
+        "hip_right"
+      ],
+      "function": [
+        "髖關節屈曲"
+      ],
+      "innervation": "Femoral nerve (L1–L3) 與腰神經叢分支",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "quadriceps_left",
+      "name": "Quadriceps Femoris",
+      "name_zh": "左側股四頭肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "quadriceps_left",
+      "origin": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.07066,
+            0.7806,
+            0.02405
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "shin_l",
+          "position": [
+            0.06838,
+            0.36258,
+            -0.00038
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.06838,
+            0.44258,
+            0.01462
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_left",
+        "knee_left"
+      ],
+      "function": [
+        "膝關節伸展",
+        "股直肌輔助髖關節屈曲"
+      ],
+      "innervation": "Femoral nerve (L2–L4)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "quadriceps_right",
+      "name": "Quadriceps Femoris",
+      "name_zh": "右側股四頭肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "quadriceps_right",
+      "origin": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.07078,
+            0.78105,
+            0.02431
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "shin_r",
+          "position": [
+            -0.06961,
+            0.3626,
+            -0.00031
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.06961,
+            0.4426,
+            0.01469
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_right",
+        "knee_right"
+      ],
+      "function": [
+        "膝關節伸展",
+        "股直肌輔助髖關節屈曲"
+      ],
+      "innervation": "Femoral nerve (L2–L4)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "hamstrings_left",
+      "name": "Hamstrings",
+      "name_zh": "左側膕旁肌群",
+      "name_latin": "",
+      "side": "left",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "hamstrings_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.05311,
+            0.80687,
+            -0.04808
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "shin_l",
+          "position": [
+            0.06838,
+            0.39258,
+            -0.05038
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.06838,
+            0.46258,
+            -0.07038
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_left",
+        "knee_left"
+      ],
+      "function": [
+        "膝關節屈曲",
+        "髖關節伸展"
+      ],
+      "innervation": "Sciatic nerve (L5–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "hamstrings_right",
+      "name": "Hamstrings",
+      "name_zh": "右側膕旁肌群",
+      "name_latin": "",
+      "side": "right",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "hamstrings_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.05427,
+            0.80653,
+            -0.04901
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "shin_r",
+          "position": [
+            -0.06961,
+            0.3926,
+            -0.05031
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.06961,
+            0.4626,
+            -0.07031
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "hip_right",
+        "knee_right"
+      ],
+      "function": [
+        "膝關節屈曲",
+        "髖關節伸展"
+      ],
+      "innervation": "Sciatic nerve (L5–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "adductors_left",
+      "name": "Hip Adductors",
+      "name_zh": "左側內收肌群",
+      "name_latin": "",
+      "side": "left",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "adductors_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.04541,
+            0.8578,
+            0.03912
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.04729,
+            0.39432,
+            -0.02241
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "hip_left"
+      ],
+      "function": [
+        "髖關節內收"
+      ],
+      "innervation": "Obturator nerve (L2–L4)；內收大肌後部為 Sciatic nerve",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "adductors_right",
+      "name": "Hip Adductors",
+      "name_zh": "右側內收肌群",
+      "name_latin": "",
+      "side": "right",
+      "region": "thigh",
+      "architecture": "multihead",
+      "mesh": "adductors_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.04572,
+            0.85774,
+            0.03914
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.04729,
+            0.39431,
+            -0.02241
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "hip_right"
+      ],
+      "function": [
+        "髖關節內收"
+      ],
+      "innervation": "Obturator nerve (L2–L4)；內收大肌後部為 Sciatic nerve",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "gastrocnemius_left",
+      "name": "Gastrocnemius and Plantaris",
+      "name_zh": "左側腓腸肌（含蹠肌、跟腱）",
+      "name_latin": "",
+      "side": "left",
+      "region": "leg",
+      "architecture": "bipennate",
+      "mesh": "gastrocnemius_left",
+      "origin": [
+        {
+          "bone": "thigh_l",
+          "position": [
+            0.06838,
+            0.45258,
+            -0.06038
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_l",
+          "position": [
+            0.07254,
+            0.03629,
+            -0.08553
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "knee_left",
+        "ankle_left"
+      ],
+      "function": [
+        "踝關節蹠屈",
+        "輔助膝關節屈曲"
+      ],
+      "innervation": "Tibial nerve (S1–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "gastrocnemius_right",
+      "name": "Gastrocnemius and Plantaris",
+      "name_zh": "右側腓腸肌（含蹠肌、跟腱）",
+      "name_latin": "",
+      "side": "right",
+      "region": "leg",
+      "architecture": "bipennate",
+      "mesh": "gastrocnemius_right",
+      "origin": [
+        {
+          "bone": "thigh_r",
+          "position": [
+            -0.06961,
+            0.4526,
+            -0.06031
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_r",
+          "position": [
+            -0.0725,
+            0.03629,
+            -0.08552
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "knee_right",
+        "ankle_right"
+      ],
+      "function": [
+        "踝關節蹠屈",
+        "輔助膝關節屈曲"
+      ],
+      "innervation": "Tibial nerve (S1–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "soleus_left",
+      "name": "Soleus",
+      "name_zh": "左側比目魚肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "leg",
+      "architecture": "multipennate",
+      "mesh": "soleus_left",
+      "origin": [
+        {
+          "bone": "shin_l",
+          "position": [
+            0.10698,
+            0.40503,
+            -0.05276
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_l",
+          "position": [
+            0.07254,
+            0.03629,
+            -0.08553
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "ankle_left"
+      ],
+      "function": [
+        "踝關節蹠屈",
+        "站立姿勢穩定"
+      ],
+      "innervation": "Tibial nerve (S1–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "soleus_right",
+      "name": "Soleus",
+      "name_zh": "右側比目魚肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "leg",
+      "architecture": "multipennate",
+      "mesh": "soleus_right",
+      "origin": [
+        {
+          "bone": "shin_r",
+          "position": [
+            -0.10691,
+            0.40473,
+            -0.05272
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_r",
+          "position": [
+            -0.0725,
+            0.03629,
+            -0.08552
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "ankle_right"
+      ],
+      "function": [
+        "踝關節蹠屈",
+        "站立姿勢穩定"
+      ],
+      "innervation": "Tibial nerve (S1–S2)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "tibialis_anterior_left",
+      "name": "Tibialis Anterior",
+      "name_zh": "左側脛前肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "leg",
+      "architecture": "fusiform",
+      "mesh": "tibialis_anterior_left",
+      "origin": [
+        {
+          "bone": "shin_l",
+          "position": [
+            0.10789,
+            0.4075,
+            -0.01396
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_l",
+          "position": [
+            0.07254,
+            0.03629,
+            0.00447
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "shin_l",
+          "position": [
+            0.07254,
+            0.09629,
+            -0.00053
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "ankle_left"
+      ],
+      "function": [
+        "踝關節背屈",
+        "足內翻"
+      ],
+      "innervation": "Deep fibular nerve (L4–L5)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "tibialis_anterior_right",
+      "name": "Tibialis Anterior",
+      "name_zh": "右側脛前肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "leg",
+      "architecture": "fusiform",
+      "mesh": "tibialis_anterior_right",
+      "origin": [
+        {
+          "bone": "shin_r",
+          "position": [
+            -0.10798,
+            0.40711,
+            -0.01447
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "foot_r",
+          "position": [
+            -0.0725,
+            0.03629,
+            0.00448
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "shin_r",
+          "position": [
+            -0.0725,
+            0.09629,
+            -0.00052
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "ankle_right"
+      ],
+      "function": [
+        "踝關節背屈",
+        "足內翻"
+      ],
+      "innervation": "Deep fibular nerve (L4–L5)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "rectus_abdominis_left",
+      "name": "Rectus Abdominis",
+      "name_zh": "左側腹直肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "abdomen",
+      "architecture": "flat",
+      "mesh": "rectus_abdominis_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.01713,
+            0.85367,
+            0.05082
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            0.05499,
+            1.25079,
+            0.10605
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹前屈",
+        "增加腹壓"
+      ],
+      "innervation": "Thoracoabdominal nerves (T7–T12)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "rectus_abdominis_right",
+      "name": "Rectus Abdominis",
+      "name_zh": "右側腹直肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "abdomen",
+      "architecture": "flat",
+      "mesh": "rectus_abdominis_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.01713,
+            0.85367,
+            0.05082
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            -0.05582,
+            1.25107,
+            0.10612
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹前屈",
+        "增加腹壓"
+      ],
+      "innervation": "Thoracoabdominal nerves (T7–T12)",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "abdominal_obliques_left",
+      "name": "Abdominal Obliques",
+      "name_zh": "左側腹斜肌（外、內）",
+      "name_latin": "",
+      "side": "left",
+      "region": "abdomen",
+      "architecture": "flat",
+      "mesh": "abdominal_obliques_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.02096,
+            0.8724,
+            0.06296
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            0.10351,
+            1.24997,
+            0.06686
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹側屈與旋轉",
+        "軀幹前屈"
+      ],
+      "innervation": "Thoracoabdominal nerves (T7–T12)、Iliohypogastric nerve",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "abdominal_obliques_right",
+      "name": "Abdominal Obliques",
+      "name_zh": "右側腹斜肌（外、內）",
+      "name_latin": "",
+      "side": "right",
+      "region": "abdomen",
+      "architecture": "flat",
+      "mesh": "abdominal_obliques_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.02269,
+            0.8731,
+            0.06265
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            -0.10503,
+            1.24979,
+            0.06578
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹側屈與旋轉",
+        "軀幹前屈"
+      ],
+      "innervation": "Thoracoabdominal nerves (T7–T12)、Iliohypogastric nerve",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "erector_spinae_left",
+      "name": "Erector Spinae",
+      "name_zh": "左側豎脊肌",
+      "name_latin": "",
+      "side": "left",
+      "region": "back",
+      "architecture": "multihead",
+      "mesh": "erector_spinae_left",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            0.01858,
+            0.9044,
+            -0.08478
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            0.03272,
+            1.55747,
+            -0.04932
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "lumbar",
+          "position": [
+            0.00017,
+            0.96634,
+            -0.09224
+          ],
+          "confidence": "approximate"
+        },
+        {
+          "bone": "chest",
+          "position": [
+            3e-05,
+            1.12489,
+            -0.10954
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹伸展",
+        "單側收縮時側屈"
+      ],
+      "innervation": "Dorsal rami of spinal nerves",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
+    },
+    {
+      "id": "erector_spinae_right",
+      "name": "Erector Spinae",
+      "name_zh": "右側豎脊肌",
+      "name_latin": "",
+      "side": "right",
+      "region": "back",
+      "architecture": "multihead",
+      "mesh": "erector_spinae_right",
+      "origin": [
+        {
+          "bone": "pelvis",
+          "position": [
+            -0.019,
+            0.90446,
+            -0.08461
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "insertion": [
+        {
+          "bone": "chest",
+          "position": [
+            -0.03155,
+            1.55951,
+            -0.05242
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "via_points": [
+        {
+          "bone": "lumbar",
+          "position": [
+            0.00017,
+            0.96634,
+            -0.09224
+          ],
+          "confidence": "approximate"
+        },
+        {
+          "bone": "chest",
+          "position": [
+            3e-05,
+            1.12489,
+            -0.10954
+          ],
+          "confidence": "approximate"
+        }
+      ],
+      "joints_crossed": [
+        "lumbar",
+        "thoracic"
+      ],
+      "function": [
+        "軀幹伸展",
+        "單側收縮時側屈"
+      ],
+      "innervation": "Dorsal rami of spinal nerves",
+      "activation": 0,
+      "deformation_profile": "fusiform_v2",
+      "morphs": {
+        "bulge": "bulge",
+        "shorten": "shorten",
+        "stretch": "stretch"
+      },
+      "source": {
+        "dataset": "Z-Anatomy (via anatomy-explorer export)",
+        "license": "CC-BY-SA-4.0",
+        "attribution": "Z-Anatomy – The libre 3D atlas of anatomy (CC BY-SA 4.0), derived from BodyParts3D © The Database Center for Life Science (CC BY-SA 2.1 JP). Rigging, shape keys and attachment estimates by DHA.",
+        "url": "https://github.com/Z-Anatomy/Models-of-human-anatomy",
+        "derivedFrom": "anatomy-explorer public/models/{skeleton,muscles}.glb"
+      }
     }
   ],
   "structures": [
@@ -3766,7 +5234,8 @@
       "category": "muscle",
       "side": "left",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_l"
@@ -3779,7 +5248,8 @@
       "category": "muscle",
       "side": "right",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_r"
@@ -3792,7 +5262,8 @@
       "category": "muscle",
       "side": "left",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_l"
@@ -3805,7 +5276,8 @@
       "category": "muscle",
       "side": "right",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_r"
@@ -3819,6 +5291,7 @@
       "side": "left",
       "region": "hip",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_l",
@@ -3833,6 +5306,7 @@
       "side": "right",
       "region": "hip",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_r",
@@ -3846,7 +5320,8 @@
       "category": "muscle",
       "side": "left",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -3861,7 +5336,8 @@
       "category": "muscle",
       "side": "right",
       "region": "hip",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -3877,6 +5353,7 @@
       "side": "left",
       "region": "hip",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_l"
@@ -3890,6 +5367,7 @@
       "side": "right",
       "region": "hip",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "thigh_r"
@@ -3902,7 +5380,8 @@
       "category": "muscle",
       "side": "left",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_l",
@@ -3916,7 +5395,8 @@
       "category": "muscle",
       "side": "right",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_r",
@@ -3931,6 +5411,7 @@
       "side": "left",
       "region": "thigh",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_l",
@@ -3945,6 +5426,7 @@
       "side": "right",
       "region": "thigh",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_r",
@@ -3958,7 +5440,8 @@
       "category": "muscle",
       "side": "left",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_l",
@@ -3972,7 +5455,8 @@
       "category": "muscle",
       "side": "right",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_r",
@@ -3986,7 +5470,8 @@
       "category": "muscle",
       "side": "left",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_l",
@@ -4000,7 +5485,8 @@
       "category": "muscle",
       "side": "right",
       "region": "thigh",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "pelvis",
         "shin_r",
@@ -4014,7 +5500,8 @@
       "category": "muscle",
       "side": "left",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "foot_l",
         "shin_l",
@@ -4028,7 +5515,8 @@
       "category": "muscle",
       "side": "right",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "foot_r",
         "shin_r",
@@ -4042,7 +5530,8 @@
       "category": "muscle",
       "side": "left",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "shin_l"
       ]
@@ -4054,7 +5543,8 @@
       "category": "muscle",
       "side": "right",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "shin_r"
       ]
@@ -4066,7 +5556,8 @@
       "category": "muscle",
       "side": "left",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "foot_l",
         "shin_l"
@@ -4079,7 +5570,8 @@
       "category": "muscle",
       "side": "right",
       "region": "leg",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "foot_r",
         "shin_r"
@@ -4093,6 +5585,7 @@
       "side": "left",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_l",
         "shin_l",
@@ -4107,6 +5600,7 @@
       "side": "right",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_r",
         "shin_r",
@@ -4121,6 +5615,7 @@
       "side": "left",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_l",
         "shin_l"
@@ -4134,6 +5629,7 @@
       "side": "right",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_r",
         "shin_r"
@@ -4147,6 +5643,7 @@
       "side": "left",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_l",
         "shin_l",
@@ -4162,6 +5659,7 @@
       "side": "right",
       "region": "leg",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_r",
         "shin_r",
@@ -4177,6 +5675,7 @@
       "side": "left",
       "region": "foot",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_l",
         "toes_l"
@@ -4190,6 +5689,7 @@
       "side": "right",
       "region": "foot",
       "static": true,
+      "bound": true,
       "bones": [
         "foot_r",
         "toes_r"
@@ -4202,7 +5702,8 @@
       "category": "muscle",
       "side": "left",
       "region": "abdomen",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4216,7 +5717,8 @@
       "category": "muscle",
       "side": "right",
       "region": "abdomen",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4230,7 +5732,8 @@
       "category": "muscle",
       "side": "left",
       "region": "abdomen",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4244,7 +5747,8 @@
       "category": "muscle",
       "side": "right",
       "region": "abdomen",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4259,6 +5763,7 @@
       "side": "left",
       "region": "abdomen",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4273,6 +5778,7 @@
       "side": "right",
       "region": "abdomen",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4287,6 +5793,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4301,6 +5808,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4314,7 +5822,8 @@
       "category": "muscle",
       "side": "left",
       "region": "back",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4331,7 +5840,8 @@
       "category": "muscle",
       "side": "right",
       "region": "back",
-      "static": true,
+      "static": false,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4349,6 +5859,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4365,6 +5876,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4381,6 +5893,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4397,6 +5910,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4413,6 +5927,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4429,6 +5944,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4445,6 +5961,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "neck",
@@ -4459,6 +5976,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "neck",
@@ -4473,6 +5991,7 @@
       "side": "left",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4488,6 +6007,7 @@
       "side": "right",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4503,6 +6023,7 @@
       "side": "left",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l"
@@ -4516,6 +6037,7 @@
       "side": "right",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r"
@@ -4529,6 +6051,7 @@
       "side": "left",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4544,6 +6067,7 @@
       "side": "right",
       "region": "back",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4559,6 +6083,7 @@
       "side": "left",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l",
@@ -4573,6 +6098,7 @@
       "side": "right",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r",
@@ -4587,6 +6113,7 @@
       "side": "left",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l"
@@ -4600,6 +6127,7 @@
       "side": "right",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r"
@@ -4613,6 +6141,7 @@
       "side": "left",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4628,6 +6157,7 @@
       "side": "right",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar",
@@ -4643,6 +6173,7 @@
       "side": "left",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l",
@@ -4657,6 +6188,7 @@
       "side": "right",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r",
@@ -4671,6 +6203,7 @@
       "side": "left",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l",
@@ -4685,6 +6218,7 @@
       "side": "right",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r",
@@ -4699,6 +6233,7 @@
       "side": "left",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l",
@@ -4713,6 +6248,7 @@
       "side": "right",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r",
@@ -4727,6 +6263,7 @@
       "side": "left",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_l",
@@ -4741,6 +6278,7 @@
       "side": "right",
       "region": "shoulder",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "shoulder_r",
@@ -4755,6 +6293,7 @@
       "side": "left",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4770,6 +6309,7 @@
       "side": "right",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4785,6 +6325,7 @@
       "side": "left",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4799,6 +6340,7 @@
       "side": "right",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4813,6 +6355,7 @@
       "side": "left",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4827,6 +6370,7 @@
       "side": "right",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4841,6 +6385,7 @@
       "side": "left",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4855,6 +6400,7 @@
       "side": "right",
       "region": "neck",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "head",
@@ -4869,6 +6415,7 @@
       "side": "midline",
       "region": "pelvis",
       "static": true,
+      "bound": true,
       "bones": [
         "pelvis"
       ]
@@ -4881,6 +6428,7 @@
       "side": "midline",
       "region": "thorax",
       "static": true,
+      "bound": true,
       "bones": [
         "chest",
         "lumbar"

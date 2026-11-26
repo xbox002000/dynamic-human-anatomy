@@ -23,8 +23,11 @@ from mathutils import Vector
 from mathutils.kdtree import KDTree
 
 _NEEDED = ("by_source", "verts", "centroid", "end_centroid", "select_only", "add_armature", "finish",
-           "bl_to_gl", "axis_gl", "seg_dist", "lim", "arm_obj", "arm_data", "UP", "ANTERIOR", "SIDES", "SRC")
+           "bl_to_gl", "axis_gl", "seg_dist", "lim", "arm_obj", "arm_data", "UP", "ANTERIOR", "SIDES", "SRC",
+           "principal_axis", "add_shape_keys", "section_point")
 OTHER = {"l": "r", "r": "l"}
+MID_BONES = {"pelvis", "lumbar", "chest", "neck", "head"}
+MID_JOINTS = {"pelvis", "lumbar", "thoracic", "neck", "head"}
 SPINE_BONE_IDS = {"cervical_spine", "thoracic_spine", "lumbar_spine"}
 LEFT = Vector((1, 0, 0))
 
@@ -281,6 +284,60 @@ def _bind_static(o, kd, wts, sigma=0.008, iters=4):
     return sorted(groups)
 
 
+# ------------------------------------------------------------------ M4 dynamic muscles
+def _bname(b, s):
+    return b if (s is None or b in MID_BONES) else f"{b}_{s}"
+
+
+def _jname(j, side):
+    return j if (side == "midline" or j in MID_JOINTS) else f"{j}_{side}"
+
+
+def _seg(name):
+    b = arm_data.bones[name]
+    return b.head_local.copy(), b.tail_local.copy()
+
+
+def _dynamic(o, m, dyn, s, side, zh, L):
+    """M4：把靜態肌群升級成動態肌肉——推算起止點、加 bulge/shorten/stretch shape keys，回傳 manifest 條目。
+    主軸取網格主成分，方向由「哪一端離起點骨 / 止點骨較近」決定。附著點皆為 approximate。"""
+    ob, ib = _bname(dyn["origin"], s), _bname(dyn["insertion"], s)
+    _, axis = principal_axis(verts(o))
+    e0, e1 = end_centroid(o, axis, "min", 0.03), end_centroid(o, axis, "max", 0.03)
+    (oa, ot), (ia, it) = _seg(ob), _seg(ib)
+    keep = seg_dist(e0, oa, ot) + seg_dist(e1, ia, it)
+    flip = seg_dist(e1, oa, ot) + seg_dist(e0, ia, it)
+    if flip < keep:
+        axis, e0, e1 = -axis, e1, e0
+    add_shape_keys(o, axis, *dyn.get("shape", [0.3, 0.12]))
+
+    def lm_point(v):
+        """地標點：關節中心 + 上下 / 前後偏移（公尺）。用於肌腱跨過關節後的附著（例：股四頭肌經髕骨止於脛骨粗隆）"""
+        c = L["legs"][s][v["at"]] if v["at"] in ("hip", "knee", "ankle", "mtp") else L[v["at"]]
+        side_dir = ANTERIOR if v.get("side", "anterior") == "anterior" else -ANTERIOR
+        return c + UP * v.get("up", 0.0) + side_dir * v.get("depth", 0.0)
+
+    if dyn.get("origin_pt"):
+        e0 = lm_point(dyn["origin_pt"])
+    if dyn.get("insertion_pt"):
+        e1 = lm_point(dyn["insertion_pt"])
+    via = [{"bone": _bname(v["bone"], s), "position": bl_to_gl(lm_point(v)), "confidence": "approximate"}
+           for v in dyn.get("via", [])]
+    name = o.name
+    return {
+        "id": name, "name": m["name"], "name_zh": zh + m["name_zh"], "name_latin": dyn.get("name_latin", ""),
+        "side": side, "region": m["region"], "architecture": dyn.get("architecture", "fusiform"), "mesh": name,
+        "origin": [{"bone": ob, "position": bl_to_gl(e0), "confidence": "approximate"}],
+        "insertion": [{"bone": ib, "position": bl_to_gl(e1), "confidence": "approximate"}],
+        "via_points": via,
+        "joints_crossed": [_jname(j, side) for j in dyn["joints"]],
+        "function": dyn.get("function", []), "innervation": dyn.get("innervation", ""),
+        "activation": 0, "deformation_profile": "fusiform_v2",
+        "morphs": {"bulge": "bulge", "shorten": "shorten", "stretch": "stretch"}, "source": SRC,
+        **({"members": m["members"]} if m.get("members") else {}),
+    }
+
+
 # ------------------------------------------------------------------ build
 def build(g, body, L, joints, structures):
     init(g)
@@ -315,7 +372,7 @@ def build(g, body, L, joints, structures):
 
     # 靜態肌肉（LBS 跟隨最近骨骼）
     kd, wts = _bone_kdtree()
-    n_static = 0
+    n_static = n_dyn = 0
     for m in body["muscles"]:
         for s in ([None] if m.get("side") == "mid" else list(SIDES)):
             side = "midline" if s is None else SIDES[s][0]
@@ -324,11 +381,18 @@ def build(g, body, L, joints, structures):
             if o is None:
                 continue
             bones = _bind_static(o, kd, wts, sigma=m.get("sigma", body.get("sigma", 0.008)), iters=m.get("smooth", body.get("smooth", 4)))
-            finish(o, "muscle")
-            o["static"] = True
             zh = "" if s is None else ("左側" if s == "l" else "右側")
+            dyn = m.get("dynamic")
+            if dyn:
+                # M4：權重沿用 M3（最近骨骼表面），另加形變 shape keys 與起止點，交給前端 MuscleSystem 驅動
+                g["muscles"].append(_dynamic(o, m, dyn, s, side, zh, L))
+                finish(o, "muscle")
+                n_dyn += 1
+            else:
+                finish(o, "muscle")
+                o["static"] = True
+                n_static += 1
             structures.append({"id": name, "name": m["name"], "name_zh": zh + m["name_zh"], "category": "muscle", "side": side,
-                               "region": m["region"], "static": True, "bones": bones})
-            n_static += 1
-    print(f"BODY 靜態肌肉 {n_static} 個")
+                               "region": m["region"], "static": not dyn, "bound": True, "bones": bones})
+    print(f"BODY 靜態肌肉 {n_static} 個、動態肌肉 {n_dyn} 個")
     return n_static

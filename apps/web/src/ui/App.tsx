@@ -231,6 +231,17 @@ export function App() {
                 ));
               })}
               <button onClick={() => engine.pose.reset()}>重設姿勢</button>
+              {engine.hasFootPlant && (
+                <label className="slider">
+                  <span>腳掌著地</span>
+                  <select value={engine.plantMode} onChange={(e) => engine.setPlantMode(e.target.value as 'off' | 'both' | 'left' | 'right')}>
+                    <option value="both">雙腳</option>
+                    <option value="left">左腳固定</option>
+                    <option value="right">右腳固定</option>
+                    <option value="off">關閉（骨盆固定）</option>
+                  </select>
+                </label>
+              )}
               {engine.hasIK && (
                 <label className="check">
                   <input type="checkbox" checked={engine.isIKEnabled} onChange={(e) => engine.setIKEnabled(e.target.checked)} />

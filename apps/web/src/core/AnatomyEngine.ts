@@ -6,6 +6,7 @@ import { SceneManager } from './SceneManager';
 import { PoseController } from '../skeleton/PoseController';
 import { MuscleSystem } from '../muscles/MuscleSystem';
 import { IKController } from '../skeleton/IKController';
+import { FootPlant, type PlantMode } from '../skeleton/FootPlant';
 import { GripController, elbowLoadTorque } from '../skeleton/GripController';
 import { expandBilateral, roleFor, sampleMotion } from '../animation/motionSampler';
 
@@ -28,6 +29,22 @@ export class AnatomyEngine {
   private pathLine: THREE.Line | null = null;
   private readonly pathDots = new THREE.Group();
   private playback: { frames: PoseDefinition[]; t: number; speed: number } | null = null;
+  private footPlant: FootPlant | null = null;
+
+  /** M4：腳掌著地是否可用（僅全身模型） */
+  get hasFootPlant(): boolean {
+    return !!this.footPlant;
+  }
+
+  get plantMode(): PlantMode {
+    return this.footPlant?.mode ?? 'off';
+  }
+
+  setPlantMode(mode: PlantMode): void {
+    if (!this.footPlant) return;
+    this.footPlant.mode = mode;
+    this.pose.commit();
+  }
 
   constructor(container: HTMLElement) {
     this.sm = new SceneManager(container);
@@ -67,6 +84,18 @@ export class AnatomyEngine {
     });
 
     this.pose = new PoseController(this.root, manifest.joints);
+    // M4：全身模型（有 pelvis 根骨骼與足部骨骼）才啟用腳掌著地；上肢模型不受影響
+    this.footPlant = null;
+    if (this.root.getObjectByName('pelvis') && this.root.getObjectByName('foot_l')) {
+      try {
+        const fp = new FootPlant(this.root);
+        this.footPlant = fp;
+        this.pose.postApply = () => fp.apply();
+        fp.apply();
+      } catch (e) {
+        console.warn('[FootPlant] 未啟用', e);
+      }
+    }
     this.muscles = new MuscleSystem(this.root, manifest.muscles);
     this.grips.clear();
     for (const g of manifest.grips ?? []) {

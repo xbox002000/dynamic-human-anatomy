@@ -54,6 +54,8 @@ export class SceneManager {
     this.camera.near = size / 100;
     this.camera.far = size * 50;
     this.camera.updateProjectionMatrix();
+    // 供自動截圖等工具判斷模型已載入並完成取景
+    this.renderer.domElement.dataset.framed = '1';
   }
 
   onUpdate(fn: (dt: number) => void): () => void {

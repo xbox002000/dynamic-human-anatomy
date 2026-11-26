@@ -141,7 +141,14 @@ export class PoseController {
     j.bone.updateMatrixWorld(true);
   }
 
+  /**
+   * M4：所有角度套用完、通知訂閱者之前執行（例：FootPlant 平移骨盆讓腳著地）。
+   * 只在非靜默更新時執行；IK 的有限差分走靜默路徑，不受影響。
+   */
+  postApply: (() => void) | null = null;
+
   private emit(): void {
+    this.postApply?.();
     for (const fn of this.listeners) fn();
   }
 }
