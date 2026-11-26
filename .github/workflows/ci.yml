@@ -35,6 +35,7 @@ jobs:
       - name: Validate committed GLB assets
         run: |
           node tools/validators/validate-glb.mjs apps/web/public/models/upper_limbs.glb apps/web/public/data/upper_limbs_manifest.json
+          node tools/validators/validate-glb.mjs apps/web/public/models/full_body.glb apps/web/public/data/full_body_manifest.json
           node tools/validators/validate-glb.mjs apps/web/public/models/arm_zanatomy_l.glb apps/web/public/data/arm_zanatomy_manifest.json
 
       - name: Build

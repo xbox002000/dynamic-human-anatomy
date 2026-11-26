@@ -15,7 +15,8 @@
     "model:zanatomy:rig": "node tools/blender/run-blender.mjs tools/blender/build_arm_zanatomy.py assets/working/zanatomy_arm_l.glb apps/web/public/models/arm_zanatomy_l.glb apps/web/public/data/arm_zanatomy_manifest.json assets/working/arm_zanatomy_l.blend",
     "model:zanatomy": "pnpm model:zanatomy:extract && pnpm model:zanatomy:rig && node tools/validators/validate-glb.mjs apps/web/public/models/arm_zanatomy_l.glb apps/web/public/data/arm_zanatomy_manifest.json",
     "validate:glb": "node tools/validators/validate-glb.mjs apps/web/public/models/arm_sample.glb",
-    "model:upper": "node tools/pipeline/upper-limbs.mjs"
+    "model:upper": "node tools/pipeline/upper-limbs.mjs",
+    "model:body": "node tools/pipeline/full-body.mjs"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.1.1",

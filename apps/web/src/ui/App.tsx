@@ -8,11 +8,12 @@ import './app.css';
 
 const base = import.meta.env.BASE_URL;
 const MODELS: Record<string, { glb: string; manifest: string; label: string }> = {
+  full: { glb: 'full_body.glb', manifest: 'full_body_manifest.json', label: 'Z-Anatomy 全身骨架（CC BY-SA 4.0）· 軀幹與下肢肌肉為靜態跟隨 · 附著點、關節與啟動曲線為近似值' },
   upper: { glb: 'upper_limbs.glb', manifest: 'upper_limbs_manifest.json', label: 'Z-Anatomy 雙側上肢（CC BY-SA 4.0）· 附著點、關節與啟動曲線為近似值' },
   zanatomy: { glb: 'arm_zanatomy_l.glb', manifest: 'arm_zanatomy_manifest.json', label: 'Z-Anatomy 左上肢（CC BY-SA 4.0）· 附著點與關節為近似推算值' },
   sample: { glb: 'arm_sample.glb', manifest: 'arm_manifest.json', label: '程序化樣本 · 尺寸與附著點為 placeholder，非解剖參考數據' },
 };
-const DEFAULT_MODEL = 'upper';
+const DEFAULT_MODEL = 'full';
 const MOTIONS = [{ id: 'dumbbell_curl', label: '站姿啞鈴二頭彎舉' }];
 const CATEGORY_ZH: Record<string, string> = { muscle: '肌肉', bone: '骨骼', skin: '皮膚', other: '其他' };
 const LAYER_ZH: Record<Layer, string> = { skin: '皮膚', muscle: '肌肉', bone: '骨骼' };
@@ -43,6 +44,17 @@ export function App() {
         const q = new URLSearchParams(location.search);
         const preset = PRESET_POSES.find((p) => p.id === q.get('pose'));
         if (preset) eng.applyPose(preset);
+        // ?j=hip_left:90,0,0;knee_left:100 ：直接指定關節角度（驗收 / 分享用）
+        const jq = q.get('j');
+        if (jq) {
+          const angles: Record<string, number[]> = {};
+          for (const part of jq.split(';')) {
+            const [id, vals] = part.split(':');
+            const nums = (vals ?? '').split(',').map(Number);
+            if (id && nums.every(Number.isFinite)) angles[id] = nums;
+          }
+          eng.pose.setAngles(angles);
+        }
         if (q.get('select')) eng.select(q.get('select'));
         // ?ik=dx,dy,dz（左手）/ ?ikr=dx,dy,dz（右手）：把手部相對目前位置移動（公尺），驗收雙側 IK 用
         for (const [param, side] of [['ik', 'left'], ['ikr', 'right']] as const) {

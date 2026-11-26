@@ -5,8 +5,8 @@ This project is fully open. It uses two licenses:
 | Scope | License |
 | --- | --- |
 | Source code: `apps/` (excluding `apps/web/public/models/**` and `apps/web/public/data/**`), `packages/`, `tools/`, `tests/`, `.github/` | MIT (see `LICENSE`) |
-| 3D models derived from Z-Anatomy / BodyParts3D: `apps/web/public/models/upper_limbs.glb`, `apps/web/public/models/arm_zanatomy_l.glb` | **CC BY-SA 4.0** |
-| Anatomical data derived from those models: `apps/web/public/data/upper_limbs_manifest.json`, `apps/web/public/data/arm_zanatomy_manifest.json` | **CC BY-SA 4.0** |
+| 3D models derived from Z-Anatomy / BodyParts3D: `apps/web/public/models/full_body.glb`, `apps/web/public/models/upper_limbs.glb`, `apps/web/public/models/arm_zanatomy_l.glb` | **CC BY-SA 4.0** |
+| Anatomical data derived from those models: `apps/web/public/data/full_body_manifest.json`, `apps/web/public/data/upper_limbs_manifest.json`, `apps/web/public/data/arm_zanatomy_manifest.json` | **CC BY-SA 4.0** |
 | Motion clips: `apps/web/public/data/motions/**` | CC BY-SA 4.0 |
 | Procedural sample: `apps/web/public/models/arm_sample.glb`, `apps/web/public/data/arm_manifest.json` | CC BY-SA 4.0 (kept the same as the other assets for simplicity) |
 | Working / source assets: `assets/**` | CC BY-SA 4.0 (or the license of the original source, see inventory) |

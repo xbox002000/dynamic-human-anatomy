@@ -8,6 +8,7 @@
 | --- | --- | --- | --- | --- |
 | Z-Anatomy 左上肢 Rig | `apps/web/public/models/arm_zanatomy_l.glb` | Z-Anatomy 幾何（經 anatomy-explorer 轉檔），DHA 加骨架/權重/shape keys | **CC BY-SA 4.0**（ShareAlike 繼承） | 骨：humerus/radius/ulna；肌：biceps（長+短頭合併）、brachialis、triceps（三頭合併） |
 | Z-Anatomy 左上肢 manifest | `apps/web/public/data/arm_zanatomy_manifest.json` | 由 `build_arm_zanatomy.py` 從網格端點推算 | CC BY-SA 4.0 | 關節中心、軸向、附著點皆為 `approximate` |
+| Z-Anatomy 全身 Rig（M3） | `apps/web/public/models/full_body.glb` + `apps/web/public/data/full_body_manifest.json` | upper_limbs 全部內容 + 中軸骨架、雙下肢骨骼、全身骨架；軀幹與下肢 80 組靜態肌肉（權重取自最近骨骼表面） | **CC BY-SA 4.0** | 不含 NC 子來源（內耳、腎臟未使用）；關節與權重皆為 `approximate` |
 | Z-Anatomy 雙側上肢 Rig | `apps/web/public/models/upper_limbs.glb` | Z-Anatomy 幾何（經 anatomy-explorer 轉檔），DHA 加骨架（含手指）/權重/`bulge`·`shorten`·`stretch` shape keys | **CC BY-SA 4.0**（ShareAlike 繼承） | 每側：鎖骨、肩胛、肱骨、橈骨、尺骨、手部骨骼；15 組肌肉（含握力肌群） |
 | Z-Anatomy 雙側上肢 manifest | `apps/web/public/data/upper_limbs_manifest.json` | 由 `build_upper_limbs.py` 從網格推算 | CC BY-SA 4.0 | 關節中心/軸向、附著點、握把幾何皆為 `approximate` |
 | 情境動作 | `apps/web/public/data/motions/**` | DHA 撰寫 | CC BY-SA 4.0 | 啟動曲線為教科書近似，非 EMG |

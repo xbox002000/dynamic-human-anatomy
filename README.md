@@ -4,7 +4,7 @@
 
 Web-based 3D 人體解剖與動態肌肉形變引擎（Three.js + TypeScript + React + Blender + GLB）。
 
-目前階段：**M2.6 雙側上肢穩定化**。模型為 Z-Anatomy 雙側上肢（每側 15 組肌肉，含握力肌群、手指骨段），可 FK / 雙側 IK 擺姿、播放「站姿啞鈴二頭彎舉」並握持啞鈴。下一步是 M3 全身骨架（見 [roadmap](docs/architecture/roadmap.md)）。
+目前階段：**M3 全身骨架**。預設模型為 Z-Anatomy 全身（`full_body.glb`）：骨盆為根、脊柱（腰 / 胸 / 頸 / 頭）、雙下肢（髖 / 膝 / 踝 / 趾）可 FK 擺姿；雙側上肢沿用 M2.6 的動態肌肉（形變、握持、雙側 IK）；軀幹與下肢 80 組肌肉先做靜態跟隨（LBS，尚無形變）。舊的上肢模型可用 `?model=upper` 開啟。下一步是 M4 全身主要肌群形變（見 [roadmap](docs/architecture/roadmap.md)）。
 
 ## 需求
 
@@ -18,12 +18,13 @@ Web-based 3D 人體解剖與動態肌肉形變引擎（Three.js + TypeScript + R
 pnpm install
 pnpm dev                 # http://localhost:5173
 pnpm typecheck
-pnpm test                # 單元測試 + 真實 GLB 測試（upper_limbs.glb）
+pnpm test                # 單元測試 + 真實 GLB 測試（upper_limbs.glb、full_body.glb）
 pnpm build
 
 # 模型管線（需 Blender）
 pnpm model:zanatomy:fetch   # 下載 anatomy-explorer 的 Z-Anatomy GLB 到 assets/source/
 pnpm model:upper            # 擷取雙側上肢 → Blender rig → upper_limbs.glb + manifest → 驗證
+pnpm model:body             # M3 全身：上肢 + 脊柱/骨盆/下肢骨架 + 軀幹與下肢靜態肌肉 → full_body.glb
 ```
 
 GitHub Actions（`.github/workflows/ci.yml`）每次 push / PR 都會跑 typecheck、測試、GLB 驗證與 build。

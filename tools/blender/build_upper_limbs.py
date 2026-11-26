@@ -28,6 +28,14 @@ argv = sys.argv[sys.argv.index("--") + 1:]
 IN_GLB, PARTS_JSON, OUT_GLB, OUT_MANIFEST = (os.path.abspath(a) for a in argv[:4])
 OUT_BLEND = os.path.abspath(argv[4]) if len(argv) > 4 else None
 CFG = json.load(open(PARTS_JSON, encoding="utf-8"))
+if CFG.get("extends"):  # M3：full_body_parts.json 以上肢定義為基底，另加 body 區段
+    _base = json.load(open(os.path.join(os.path.dirname(PARTS_JSON), CFG["extends"]), encoding="utf-8"))
+    _base.update({k: v for k, v in CFG.items() if k != "extends"})
+    CFG = _base
+BODY = CFG.get("body")
+if BODY:
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import body_ext  # noqa: E402
 FINGERS = CFG.get("fingers", {})
 GRIP = CFG.get("grip", {"radius": 0.015, "palm_offset": 0.016})
 FINGER_PARTS = {part for f in FINGERS.values() for _, part in f["segments"]}
@@ -223,12 +231,17 @@ for s, (side, sign) in SIDES.items():
 
 chest_top = (sides["l"]["sternal"] + sides["r"]["sternal"]) / 2
 chest_base = chest_top - Vector((0, 0, 0.18))
+BODY_L = body_ext.landmarks(globals(), BODY) if BODY else None
 
 select_only([arm_obj])
 bpy.ops.object.mode_set(mode="EDIT")
-eb = arm_data.edit_bones.new("chest")
-eb.head, eb.tail = chest_base, chest_top
-BONE_NAMES = ["chest"]
+if BODY:
+    # M3：chest 改由全身脊柱鏈建立（pelvis → lumbar → chest → neck → head），shoulder_s 仍掛在 chest
+    BONE_NAMES = body_ext.create_bones(globals(), BODY_L)
+else:
+    eb = arm_data.edit_bones.new("chest")
+    eb.head, eb.tail = chest_base, chest_top
+    BONE_NAMES = ["chest"]
 for s, d in sides.items():
     chain = [
         (f"shoulder_{s}", d["sternal"], d["shoulder"], "chest", False),
@@ -533,6 +546,8 @@ for s, d in sides.items():
             entry["members"] = m["members"]
         muscles.append(entry)
 
+N_STATIC = body_ext.build(globals(), BODY, BODY_L, joints, structures) if BODY else 0
+
 left = [k for k in by_source]
 if left:
     print("WARN 未使用零件：", left)
@@ -550,7 +565,10 @@ os.makedirs(os.path.dirname(OUT_MANIFEST), exist_ok=True)
 with open(OUT_MANIFEST, "w", encoding="utf-8") as f:
     json.dump(manifest, f, ensure_ascii=False, indent=2)
 
-scene["dha_asset"] = "upper_limbs"
+if BODY:
+    manifest["version"] = "0.5.0"
+    manifest["note"] += " M3: full-body deform rig (spine, pelvis, lower limbs); trunk and lower-limb muscles are static (LBS follow skeleton, no morphs yet)."
+scene["dha_asset"] = "full_body" if BODY else "upper_limbs"
 scene["dha_license"] = "CC-BY-SA-4.0"
 if OUT_BLEND:
     os.makedirs(os.path.dirname(OUT_BLEND), exist_ok=True)
