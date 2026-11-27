@@ -315,7 +315,9 @@ def _dynamic(o, m, dyn, s, side, zh, L):
         """地標點：關節中心 + 上下 / 前後偏移（公尺）。用於肌腱跨過關節後的附著（例：股四頭肌經髕骨止於脛骨粗隆）"""
         c = L["legs"][s][v["at"]] if v["at"] in ("hip", "knee", "ankle", "mtp") else L[v["at"]]
         side_dir = ANTERIOR if v.get("side", "anterior") == "anterior" else -ANTERIOR
-        return c + UP * v.get("up", 0.0) + side_dir * v.get("depth", 0.0)
+        # medial：往身體中線偏移（公尺，M4.2 新增，預設 0 → 既有地標不變）
+        medial_dir = -LEFT if s == "l" else LEFT
+        return c + UP * v.get("up", 0.0) + side_dir * v.get("depth", 0.0) + medial_dir * v.get("medial", 0.0)
 
     if dyn.get("origin_pt"):
         e0 = lm_point(dyn["origin_pt"])
@@ -333,6 +335,7 @@ def _dynamic(o, m, dyn, s, side, zh, L):
         "joints_crossed": [_jname(j, side) for j in dyn["joints"]],
         "function": dyn.get("function", []), "innervation": dyn.get("innervation", ""),
         "activation": 0, "deformation_profile": "fusiform_v2",
+        **({"deformation_params": dyn["deformation_params"]} if dyn.get("deformation_params") else {}),
         "morphs": {"bulge": "bulge", "shorten": "shorten", "stretch": "stretch"}, "source": SRC,
         **({"members": m["members"]} if m.get("members") else {}),
     }

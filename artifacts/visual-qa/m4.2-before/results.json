@@ -1,0 +1,1566 @@
+{
+  "generatedAt": "2026-11-27T02:20:55.327Z",
+  "baseUrl": "http://localhost:5199",
+  "browser": "msedge.exe",
+  "viewport": [
+    1280,
+    960
+  ],
+  "canvas": {
+    "x": 240,
+    "y": 0,
+    "width": 740,
+    "height": 595.203125
+  },
+  "loadMs": 9798,
+  "smoke": false,
+  "pass": false,
+  "consoleErrors": [
+    "log: Failed to load resource: the server responded with a status of 404 (Not Found) http://localhost:5199/favicon.ico"
+  ],
+  "consoleWarnings": [],
+  "repeatability": [
+    {
+      "id": "P01",
+      "first": "33434ff3bd1fb7bf",
+      "again": "33434ff3bd1fb7bf",
+      "identical": true
+    },
+    {
+      "id": "P02",
+      "first": "f6df28c3b7e433d4",
+      "again": "f6df28c3b7e433d4",
+      "identical": true
+    },
+    {
+      "id": "P03",
+      "first": "8f09f3a587a2fc55",
+      "again": "8f09f3a587a2fc55",
+      "identical": true
+    }
+  ],
+  "results": [
+    {
+      "id": "P01",
+      "name": "Rest Pose",
+      "plant": "both",
+      "angles": {},
+      "applied": {},
+      "activation": {},
+      "pelvis": [
+        -0.00006,
+        0.86083,
+        -0.00582
+      ],
+      "feet": {
+        "left": {
+          "kind": "ball",
+          "now": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        },
+        "right": {
+          "kind": "ball",
+          "now": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        }
+      },
+      "changedMuscles": {},
+      "shots": [
+        {
+          "view": "front",
+          "file": "P01_front.png",
+          "sha": "33434ff3bd1fb7bf"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P01_threeQuarter.png",
+          "sha": "9b9a6e71bf77c415"
+        },
+        {
+          "view": "side",
+          "file": "P01_side.png",
+          "sha": "ee41b0a912e73c00"
+        }
+      ],
+      "checks": [
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P02",
+      "name": "Biceps Curl",
+      "plant": "both",
+      "angles": {
+        "elbow_left": [
+          90
+        ]
+      },
+      "applied": {
+        "elbow_left": [
+          90
+        ]
+      },
+      "activation": {
+        "biceps_brachii_left": 0.8,
+        "brachialis_left": 0.85,
+        "brachioradialis_left": 0.5
+      },
+      "pelvis": [
+        -0.00006,
+        0.86083,
+        -0.00582
+      ],
+      "feet": {
+        "left": {
+          "kind": "ball",
+          "now": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        },
+        "right": {
+          "kind": "ball",
+          "now": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        }
+      },
+      "changedMuscles": {
+        "pronator_teres_left": {
+          "ratio": 0.7639,
+          "contraction": 0.787,
+          "stretch": 0,
+          "bulge": 0.551,
+          "activation": 0
+        },
+        "brachioradialis_left": {
+          "ratio": 0.8402,
+          "contraction": 0.533,
+          "stretch": 0,
+          "bulge": 0.733,
+          "activation": 0.5
+        },
+        "brachialis_left": {
+          "ratio": 0.8514,
+          "contraction": 0.495,
+          "stretch": 0,
+          "bulge": 0.939,
+          "activation": 0.85
+        },
+        "biceps_brachii_left": {
+          "ratio": 0.8731,
+          "contraction": 0.423,
+          "stretch": 0,
+          "bulge": 0.819,
+          "activation": 0.8
+        },
+        "triceps_brachii_left": {
+          "ratio": 1.0893,
+          "contraction": 0,
+          "stretch": 0.447,
+          "bulge": 0,
+          "activation": 0
+        },
+        "forearm_extensors_left": {
+          "ratio": 0.9152,
+          "contraction": 0.283,
+          "stretch": 0,
+          "bulge": 0.198,
+          "activation": 0
+        },
+        "wrist_flexors_left": {
+          "ratio": 0.9165,
+          "contraction": 0.278,
+          "stretch": 0,
+          "bulge": 0.195,
+          "activation": 0
+        },
+        "finger_flexors_left": {
+          "ratio": 0.9462,
+          "contraction": 0.179,
+          "stretch": 0,
+          "bulge": 0.126,
+          "activation": 0
+        },
+        "supinator_left": {
+          "ratio": 0.957,
+          "contraction": 0.143,
+          "stretch": 0,
+          "bulge": 0.1,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P02_front.png",
+          "sha": "f6df28c3b7e433d4"
+        },
+        {
+          "view": "front+detail",
+          "file": "P02_front_detail.png",
+          "sha": "6a976ba30322a29b"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P02_threeQuarter.png",
+          "sha": "ddd89ffb5a08dfff"
+        },
+        {
+          "view": "threeQuarter+detail",
+          "file": "P02_threeQuarter_detail.png",
+          "sha": "f599afad1050bab8"
+        },
+        {
+          "view": "side",
+          "file": "P02_side.png",
+          "sha": "7dbb67a4d31c9634"
+        },
+        {
+          "view": "side+detail",
+          "file": "P02_side_detail.png",
+          "sha": "8590e8527b611427"
+        }
+      ],
+      "checks": [
+        {
+          "name": "elbow_left[x]=90 within 0..145",
+          "pass": true
+        },
+        {
+          "name": "elbow_left applied",
+          "pass": true,
+          "detail": "requested 90 got 90"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P03",
+      "name": "Deep Squat",
+      "plant": "both",
+      "angles": {
+        "hip_left": [
+          100,
+          0,
+          0
+        ],
+        "hip_right": [
+          100,
+          0,
+          0
+        ],
+        "knee_left": [
+          120
+        ],
+        "knee_right": [
+          120
+        ],
+        "ankle_left": [
+          15,
+          0
+        ],
+        "ankle_right": [
+          15,
+          0
+        ],
+        "lumbar": [
+          25,
+          0,
+          0
+        ],
+        "shoulder_left": [
+          80,
+          0,
+          0
+        ],
+        "shoulder_right": [
+          80,
+          0,
+          0
+        ]
+      },
+      "applied": {
+        "hip_left": [
+          100,
+          0,
+          0
+        ],
+        "hip_right": [
+          100,
+          0,
+          0
+        ],
+        "knee_left": [
+          120
+        ],
+        "knee_right": [
+          120
+        ],
+        "ankle_left": [
+          15,
+          0
+        ],
+        "ankle_right": [
+          15,
+          0
+        ],
+        "lumbar": [
+          25,
+          0,
+          0
+        ],
+        "shoulder_left": [
+          80,
+          0,
+          0
+        ],
+        "shoulder_right": [
+          80,
+          0,
+          0
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        0.00061,
+        0.37337,
+        -0.32522
+      ],
+      "feet": {
+        "left": {
+          "kind": "toe",
+          "now": [
+            0.10112,
+            0.01141,
+            0.13687
+          ],
+          "rest": [
+            0.10275,
+            0.01163,
+            0.13731
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.0017
+        },
+        "right": {
+          "kind": "toe",
+          "now": [
+            -0.10112,
+            0.01198,
+            0.13775
+          ],
+          "rest": [
+            -0.10275,
+            0.01163,
+            0.13731
+          ],
+          "heightAboveGround": 0.00057,
+          "horizontalSlip": 0.0017
+        }
+      },
+      "changedMuscles": {
+        "gluteus_maximus_right": {
+          "ratio": 1.3179,
+          "contraction": 0,
+          "stretch": 1,
+          "bulge": 0,
+          "activation": 0
+        },
+        "gluteus_maximus_left": {
+          "ratio": 1.313,
+          "contraction": 0,
+          "stretch": 1,
+          "bulge": 0,
+          "activation": 0
+        },
+        "iliopsoas_right": {
+          "ratio": 0.8111,
+          "contraction": 0.63,
+          "stretch": 0,
+          "bulge": 0.441,
+          "activation": 0
+        },
+        "triceps_brachii_left": {
+          "ratio": 1.1878,
+          "contraction": 0,
+          "stretch": 0.939,
+          "bulge": 0,
+          "activation": 0
+        },
+        "iliopsoas_left": {
+          "ratio": 0.8123,
+          "contraction": 0.626,
+          "stretch": 0,
+          "bulge": 0.438,
+          "activation": 0
+        },
+        "triceps_brachii_right": {
+          "ratio": 1.1843,
+          "contraction": 0,
+          "stretch": 0.922,
+          "bulge": 0,
+          "activation": 0
+        },
+        "hamstrings_right": {
+          "ratio": 1.121,
+          "contraction": 0,
+          "stretch": 0.605,
+          "bulge": 0,
+          "activation": 0
+        },
+        "hamstrings_left": {
+          "ratio": 1.1159,
+          "contraction": 0,
+          "stretch": 0.58,
+          "bulge": 0,
+          "activation": 0
+        },
+        "rectus_abdominis_left": {
+          "ratio": 0.8889,
+          "contraction": 0.37,
+          "stretch": 0,
+          "bulge": 0.259,
+          "activation": 0
+        },
+        "rectus_abdominis_right": {
+          "ratio": 0.889,
+          "contraction": 0.37,
+          "stretch": 0,
+          "bulge": 0.259,
+          "activation": 0
+        },
+        "abdominal_obliques_left": {
+          "ratio": 0.89,
+          "contraction": 0.367,
+          "stretch": 0,
+          "bulge": 0.257,
+          "activation": 0
+        },
+        "abdominal_obliques_right": {
+          "ratio": 0.8903,
+          "contraction": 0.366,
+          "stretch": 0,
+          "bulge": 0.256,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P03_front.png",
+          "sha": "8f09f3a587a2fc55"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P03_threeQuarter.png",
+          "sha": "b24b3643511880e6"
+        },
+        {
+          "view": "side",
+          "file": "P03_side.png",
+          "sha": "6f308f759713e56b"
+        }
+      ],
+      "checks": [
+        {
+          "name": "hip_left[x]=100 within -20..120",
+          "pass": true
+        },
+        {
+          "name": "hip_left[z]=0 within -30..45",
+          "pass": true
+        },
+        {
+          "name": "hip_left[y]=0 within -45..40",
+          "pass": true
+        },
+        {
+          "name": "hip_right[x]=100 within -20..120",
+          "pass": true
+        },
+        {
+          "name": "hip_right[z]=0 within -30..45",
+          "pass": true
+        },
+        {
+          "name": "hip_right[y]=0 within -45..40",
+          "pass": true
+        },
+        {
+          "name": "knee_left[x]=120 within 0..140",
+          "pass": true
+        },
+        {
+          "name": "knee_right[x]=120 within 0..140",
+          "pass": true
+        },
+        {
+          "name": "ankle_left[x]=15 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_left[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[x]=15 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "lumbar[x]=25 within -25..50",
+          "pass": true
+        },
+        {
+          "name": "lumbar[z]=0 within -20..20",
+          "pass": true
+        },
+        {
+          "name": "lumbar[y]=0 within -5..5",
+          "pass": true
+        },
+        {
+          "name": "shoulder_left[x]=80 within -50..170",
+          "pass": true
+        },
+        {
+          "name": "shoulder_left[z]=0 within -20..170",
+          "pass": true
+        },
+        {
+          "name": "shoulder_left[y]=0 within -90..70",
+          "pass": true
+        },
+        {
+          "name": "shoulder_right[x]=80 within -50..170",
+          "pass": true
+        },
+        {
+          "name": "shoulder_right[z]=0 within -20..170",
+          "pass": true
+        },
+        {
+          "name": "shoulder_right[y]=0 within -90..70",
+          "pass": true
+        },
+        {
+          "name": "hip_left applied",
+          "pass": true,
+          "detail": "requested 100,0,0 got 100,0,0"
+        },
+        {
+          "name": "hip_right applied",
+          "pass": true,
+          "detail": "requested 100,0,0 got 100,0,0"
+        },
+        {
+          "name": "knee_left applied",
+          "pass": true,
+          "detail": "requested 120 got 120"
+        },
+        {
+          "name": "knee_right applied",
+          "pass": true,
+          "detail": "requested 120 got 120"
+        },
+        {
+          "name": "ankle_left applied",
+          "pass": true,
+          "detail": "requested 15,0 got 15,0"
+        },
+        {
+          "name": "ankle_right applied",
+          "pass": true,
+          "detail": "requested 15,0 got 15,0"
+        },
+        {
+          "name": "lumbar applied",
+          "pass": true,
+          "detail": "requested 25,0,0 got 25,0,0"
+        },
+        {
+          "name": "shoulder_left applied",
+          "pass": true,
+          "detail": "requested 80,0,0 got 80,0,0"
+        },
+        {
+          "name": "shoulder_right applied",
+          "pass": true,
+          "detail": "requested 80,0,0 got 80,0,0"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P04",
+      "name": "Hip Abduction",
+      "plant": "both",
+      "angles": {
+        "hip_left": [
+          0,
+          20,
+          0
+        ],
+        "hip_right": [
+          0,
+          20,
+          0
+        ]
+      },
+      "applied": {
+        "hip_left": [
+          0,
+          20,
+          0
+        ],
+        "hip_right": [
+          0,
+          20,
+          0
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        0.00001,
+        0.80727,
+        -0.00889
+      ],
+      "feet": {
+        "left": {
+          "kind": "ball",
+          "now": [
+            0.36687,
+            0.01143,
+            0.07374
+          ],
+          "rest": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0.00002,
+          "horizontalSlip": 0.288
+        },
+        "right": {
+          "kind": "ball",
+          "now": [
+            -0.36687,
+            0.01141,
+            0.07376
+          ],
+          "rest": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.288
+        }
+      },
+      "changedMuscles": {
+        "gluteus_medius_minimus_right": {
+          "ratio": 0.8533,
+          "contraction": 0.489,
+          "stretch": 0,
+          "bulge": 0.342,
+          "activation": 0
+        },
+        "gluteus_medius_minimus_left": {
+          "ratio": 0.8543,
+          "contraction": 0.486,
+          "stretch": 0,
+          "bulge": 0.34,
+          "activation": 0
+        },
+        "hamstrings_left": {
+          "ratio": 1.0254,
+          "contraction": 0,
+          "stretch": 0.127,
+          "bulge": 0,
+          "activation": 0
+        },
+        "hamstrings_right": {
+          "ratio": 1.0248,
+          "contraction": 0,
+          "stretch": 0.124,
+          "bulge": 0,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P04_front.png",
+          "sha": "c8a6568d6d6e619c"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P04_threeQuarter.png",
+          "sha": "abc5f81225e2ed37"
+        },
+        {
+          "view": "back",
+          "file": "P04_back.png",
+          "sha": "9e14a3614689c40a"
+        }
+      ],
+      "checks": [
+        {
+          "name": "hip_left[x]=0 within -20..120",
+          "pass": true
+        },
+        {
+          "name": "hip_left[z]=20 within -30..45",
+          "pass": true
+        },
+        {
+          "name": "hip_left[y]=0 within -45..40",
+          "pass": true
+        },
+        {
+          "name": "hip_right[x]=0 within -20..120",
+          "pass": true
+        },
+        {
+          "name": "hip_right[z]=20 within -30..45",
+          "pass": true
+        },
+        {
+          "name": "hip_right[y]=0 within -45..40",
+          "pass": true
+        },
+        {
+          "name": "hip_left applied",
+          "pass": true,
+          "detail": "requested 0,20,0 got 0,20,0"
+        },
+        {
+          "name": "hip_right applied",
+          "pass": true,
+          "detail": "requested 0,20,0 got 0,20,0"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P05",
+      "name": "Single Leg Raise (left stance)",
+      "plant": "left",
+      "angles": {
+        "hip_right": [
+          90,
+          0,
+          0
+        ],
+        "knee_right": [
+          90
+        ]
+      },
+      "applied": {
+        "hip_right": [
+          90,
+          0,
+          0
+        ],
+        "knee_right": [
+          90
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        -0.00006,
+        0.86083,
+        -0.00582
+      ],
+      "feet": {
+        "left": {
+          "kind": "ball",
+          "now": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        },
+        "right": {
+          "kind": "toe",
+          "now": [
+            -0.10116,
+            0.41513,
+            0.59005
+          ],
+          "rest": [
+            -0.10275,
+            0.01163,
+            0.13731
+          ],
+          "heightAboveGround": 0.40373,
+          "horizontalSlip": 0.45275
+        }
+      },
+      "changedMuscles": {
+        "gluteus_maximus_right": {
+          "ratio": 1.3095,
+          "contraction": 0,
+          "stretch": 1,
+          "bulge": 0,
+          "activation": 0
+        },
+        "iliopsoas_right": {
+          "ratio": 0.8778,
+          "contraction": 0.407,
+          "stretch": 0,
+          "bulge": 0.285,
+          "activation": 0
+        },
+        "gastrocnemius_right": {
+          "ratio": 0.8823,
+          "contraction": 0.392,
+          "stretch": 0,
+          "bulge": 0.275,
+          "activation": 0
+        },
+        "adductors_right": {
+          "ratio": 0.9031,
+          "contraction": 0.323,
+          "stretch": 0,
+          "bulge": 0.226,
+          "activation": 0
+        },
+        "quadriceps_right": {
+          "ratio": 1.0961,
+          "contraction": 0,
+          "stretch": 0.48,
+          "bulge": 0,
+          "activation": 0
+        },
+        "hamstrings_right": {
+          "ratio": 1.0825,
+          "contraction": 0,
+          "stretch": 0.413,
+          "bulge": 0,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P05_front.png",
+          "sha": "c40d4ffb01bee7ae"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P05_threeQuarter.png",
+          "sha": "13b19248991edae8"
+        },
+        {
+          "view": "side",
+          "file": "P05_side.png",
+          "sha": "532ebd6bda501309"
+        }
+      ],
+      "checks": [
+        {
+          "name": "hip_right[x]=90 within -20..120",
+          "pass": true
+        },
+        {
+          "name": "hip_right[z]=0 within -30..45",
+          "pass": true
+        },
+        {
+          "name": "hip_right[y]=0 within -45..40",
+          "pass": true
+        },
+        {
+          "name": "knee_right[x]=90 within 0..140",
+          "pass": true
+        },
+        {
+          "name": "hip_right applied",
+          "pass": true,
+          "detail": "requested 90,0,0 got 90,0,0"
+        },
+        {
+          "name": "knee_right applied",
+          "pass": true,
+          "detail": "requested 90 got 90"
+        },
+        {
+          "name": "left: support on ground",
+          "pass": true,
+          "detail": "0.0 mm"
+        },
+        {
+          "name": "left: support not slipping",
+          "pass": true,
+          "detail": "0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P06",
+      "name": "Ankle Dorsiflexion",
+      "plant": "both",
+      "angles": {
+        "ankle_left": [
+          20,
+          0
+        ],
+        "ankle_right": [
+          20,
+          0
+        ]
+      },
+      "applied": {
+        "ankle_left": [
+          20,
+          0
+        ],
+        "ankle_right": [
+          20,
+          0
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        -0.00006,
+        0.86822,
+        -0.02568
+      ],
+      "feet": {
+        "left": {
+          "kind": "heel",
+          "now": [
+            0.08287,
+            0.01141,
+            -0.07026
+          ],
+          "rest": [
+            0.07741,
+            0.01174,
+            -0.07026
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.00546
+        },
+        "right": {
+          "kind": "heel",
+          "now": [
+            -0.08287,
+            0.01141,
+            -0.07026
+          ],
+          "rest": [
+            -0.07741,
+            0.01174,
+            -0.07026
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.00546
+        }
+      },
+      "changedMuscles": {
+        "soleus_right": {
+          "ratio": 1.0361,
+          "contraction": 0,
+          "stretch": 0.18,
+          "bulge": 0,
+          "activation": 0
+        },
+        "soleus_left": {
+          "ratio": 1.036,
+          "contraction": 0,
+          "stretch": 0.18,
+          "bulge": 0,
+          "activation": 0
+        },
+        "tibialis_anterior_left": {
+          "ratio": 0.9641,
+          "contraction": 0.12,
+          "stretch": 0,
+          "bulge": 0.084,
+          "activation": 0
+        },
+        "tibialis_anterior_right": {
+          "ratio": 0.9641,
+          "contraction": 0.12,
+          "stretch": 0,
+          "bulge": 0.084,
+          "activation": 0
+        },
+        "gastrocnemius_left": {
+          "ratio": 1.0339,
+          "contraction": 0,
+          "stretch": 0.17,
+          "bulge": 0,
+          "activation": 0
+        },
+        "gastrocnemius_right": {
+          "ratio": 1.0339,
+          "contraction": 0,
+          "stretch": 0.169,
+          "bulge": 0,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P06_front.png",
+          "sha": "11a5ae5846606962"
+        },
+        {
+          "view": "front+detail",
+          "file": "P06_front_detail.png",
+          "sha": "0ea62ba2dc2e4b6a"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P06_threeQuarter.png",
+          "sha": "8add57b2a6571172"
+        },
+        {
+          "view": "threeQuarter+detail",
+          "file": "P06_threeQuarter_detail.png",
+          "sha": "7fd4af23b5aed309"
+        },
+        {
+          "view": "side",
+          "file": "P06_side.png",
+          "sha": "4fe54c75c7775f8e"
+        },
+        {
+          "view": "side+detail",
+          "file": "P06_side_detail.png",
+          "sha": "2d64c6e3bc9c5e69"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ankle_left[x]=20 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_left[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[x]=20 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "ankle_left applied",
+          "pass": true,
+          "detail": "requested 20,0 got 20,0"
+        },
+        {
+          "name": "ankle_right applied",
+          "pass": true,
+          "detail": "requested 20,0 got 20,0"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P07",
+      "name": "Plantarflexion",
+      "plant": "both",
+      "angles": {
+        "ankle_left": [
+          -40,
+          0
+        ],
+        "ankle_right": [
+          -40,
+          0
+        ]
+      },
+      "applied": {
+        "ankle_left": [
+          -40,
+          0
+        ],
+        "ankle_right": [
+          -40,
+          0
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        -0.00007,
+        0.96009,
+        0.06746
+      ],
+      "feet": {
+        "left": {
+          "kind": "toe",
+          "now": [
+            0.08261,
+            0.01141,
+            0.1373
+          ],
+          "rest": [
+            0.10275,
+            0.01163,
+            0.13731
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.02015
+        },
+        "right": {
+          "kind": "toe",
+          "now": [
+            -0.08261,
+            0.01141,
+            0.13731
+          ],
+          "rest": [
+            -0.10275,
+            0.01163,
+            0.13731
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0.02015
+        }
+      },
+      "changedMuscles": {
+        "soleus_right": {
+          "ratio": 0.9015,
+          "contraction": 0.328,
+          "stretch": 0,
+          "bulge": 0.23,
+          "activation": 0
+        },
+        "soleus_left": {
+          "ratio": 0.9016,
+          "contraction": 0.328,
+          "stretch": 0,
+          "bulge": 0.23,
+          "activation": 0
+        },
+        "gastrocnemius_left": {
+          "ratio": 0.9104,
+          "contraction": 0.299,
+          "stretch": 0,
+          "bulge": 0.209,
+          "activation": 0
+        },
+        "gastrocnemius_right": {
+          "ratio": 0.9105,
+          "contraction": 0.298,
+          "stretch": 0,
+          "bulge": 0.209,
+          "activation": 0
+        },
+        "tibialis_anterior_right": {
+          "ratio": 1.0564,
+          "contraction": 0,
+          "stretch": 0.282,
+          "bulge": 0,
+          "activation": 0
+        },
+        "tibialis_anterior_left": {
+          "ratio": 1.0563,
+          "contraction": 0,
+          "stretch": 0.282,
+          "bulge": 0,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P07_front.png",
+          "sha": "7248c2b231cd0b7f"
+        },
+        {
+          "view": "front+detail",
+          "file": "P07_front_detail.png",
+          "sha": "9f302a24bbd255ea"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P07_threeQuarter.png",
+          "sha": "e054a3096f8ed791"
+        },
+        {
+          "view": "threeQuarter+detail",
+          "file": "P07_threeQuarter_detail.png",
+          "sha": "a47cdbbc720020bf"
+        },
+        {
+          "view": "side",
+          "file": "P07_side.png",
+          "sha": "41ab8019d082300f"
+        },
+        {
+          "view": "side+detail",
+          "file": "P07_side_detail.png",
+          "sha": "e2d1b8c6dd86331a"
+        }
+      ],
+      "checks": [
+        {
+          "name": "ankle_left[x]=-40 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_left[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[x]=-40 within -50..20",
+          "pass": true
+        },
+        {
+          "name": "ankle_right[z]=0 within -15..30",
+          "pass": true
+        },
+        {
+          "name": "ankle_left applied",
+          "pass": true,
+          "detail": "requested -40,0 got -40,0"
+        },
+        {
+          "name": "ankle_right applied",
+          "pass": true,
+          "detail": "requested -40,0 got -40,0"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    },
+    {
+      "id": "P08",
+      "name": "Trunk Lateral Flexion (left)",
+      "plant": "both",
+      "angles": {
+        "lumbar": [
+          0,
+          20,
+          0
+        ],
+        "thoracic": [
+          0,
+          20,
+          0
+        ]
+      },
+      "applied": {
+        "lumbar": [
+          0,
+          20,
+          0
+        ],
+        "thoracic": [
+          0,
+          20,
+          0
+        ]
+      },
+      "activation": {},
+      "pelvis": [
+        -0.00006,
+        0.86083,
+        -0.00582
+      ],
+      "feet": {
+        "left": {
+          "kind": "ball",
+          "now": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        },
+        "right": {
+          "kind": "ball",
+          "now": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "rest": [
+            -0.07887,
+            0.01141,
+            0.07375
+          ],
+          "heightAboveGround": 0,
+          "horizontalSlip": 0
+        }
+      },
+      "changedMuscles": {
+        "abdominal_obliques_left": {
+          "ratio": 0.8635,
+          "contraction": 0.455,
+          "stretch": 0,
+          "bulge": 0.318,
+          "activation": 0
+        },
+        "rectus_abdominis_left": {
+          "ratio": 0.9053,
+          "contraction": 0.316,
+          "stretch": 0,
+          "bulge": 0.221,
+          "activation": 0
+        },
+        "abdominal_obliques_right": {
+          "ratio": 1.0703,
+          "contraction": 0,
+          "stretch": 0.351,
+          "bulge": 0,
+          "activation": 0
+        },
+        "iliopsoas_left": {
+          "ratio": 0.9433,
+          "contraction": 0.189,
+          "stretch": 0,
+          "bulge": 0.132,
+          "activation": 0
+        },
+        "iliopsoas_right": {
+          "ratio": 1.0378,
+          "contraction": 0,
+          "stretch": 0.189,
+          "bulge": 0,
+          "activation": 0
+        },
+        "rectus_abdominis_right": {
+          "ratio": 1.0245,
+          "contraction": 0,
+          "stretch": 0.123,
+          "bulge": 0,
+          "activation": 0
+        }
+      },
+      "shots": [
+        {
+          "view": "front",
+          "file": "P08_front.png",
+          "sha": "de5c720dad956d30"
+        },
+        {
+          "view": "threeQuarter",
+          "file": "P08_threeQuarter.png",
+          "sha": "6b646b0ce09038ae"
+        },
+        {
+          "view": "back",
+          "file": "P08_back.png",
+          "sha": "85865f7adfc724b5"
+        }
+      ],
+      "checks": [
+        {
+          "name": "lumbar[x]=0 within -25..50",
+          "pass": true
+        },
+        {
+          "name": "lumbar[z]=20 within -20..20",
+          "pass": true
+        },
+        {
+          "name": "lumbar[y]=0 within -5..5",
+          "pass": true
+        },
+        {
+          "name": "thoracic[x]=0 within -20..35",
+          "pass": true
+        },
+        {
+          "name": "thoracic[z]=20 within -20..20",
+          "pass": true
+        },
+        {
+          "name": "thoracic[y]=0 within -35..35",
+          "pass": true
+        },
+        {
+          "name": "lumbar applied",
+          "pass": true,
+          "detail": "requested 0,20,0 got 0,20,0"
+        },
+        {
+          "name": "thoracic applied",
+          "pass": true,
+          "detail": "requested 0,20,0 got 0,20,0"
+        },
+        {
+          "name": "both: lowest support on ground",
+          "pass": true,
+          "detail": "lowest=0.0 mm"
+        },
+        {
+          "name": "all muscle path lengths finite & positive",
+          "pass": true,
+          "detail": ""
+        },
+        {
+          "name": "no console errors",
+          "pass": true,
+          "detail": ""
+        }
+      ],
+      "pass": true
+    }
+  ]
+}

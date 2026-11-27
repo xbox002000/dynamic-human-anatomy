@@ -11,6 +11,7 @@ import type { AnatomyManifest, MuscleDefinition } from '../../packages/anatomy-s
 import { PoseController } from '../../apps/web/src/skeleton/PoseController';
 import { MuscleSystem } from '../../apps/web/src/muscles/MuscleSystem';
 import { FootPlant } from '../../apps/web/src/skeleton/FootPlant';
+import { IKController } from '../../apps/web/src/skeleton/IKController';
 
 const ROOT = path.resolve(__dirname, '../..');
 const GLB = path.join(ROOT, 'apps/web/public/models/full_body.glb');
@@ -121,6 +122,55 @@ describe('M4.1：每條動態肌肉的資料與 GLB 一致', () => {
   });
 });
 
+/**
+ * M4.2 Phase 3A：逐條肌肉 × 逐個 joints_crossed 關節獨立驗證。
+ * M4.1 的測試取「所有跨越關節中最大的權重」，某個關節有效就會掩蓋另一個關節失效。
+ * 這裡每個關節單獨擺到各軸極限，該關節自身必須讓 shorten 或 stretch 權重 ≥ 門檻。
+ * 例外必須寫明原因（資料定義 or 幾何合理結果），不可用放寬門檻掩蓋。
+ */
+const PER_JOINT_MIN = 0.02;
+const QUAD_HIP = '資料定義（刻意）：路徑起點在 thigh（三條股肌起於股骨），不含股直肌跨髖效果，故髖關節不改變路徑長度。見 tools/pipeline/m4-dynamic.mjs quadriceps 註解。若改起點到骨盆（AIIS），深蹲時整個股四頭肌 mesh 會被錯誤縮短。待 M4.3 拆出 rectus_femoris 獨立路徑。';
+const LUMB_PIP = '資料定義限制：止點在近節指骨（middle_prox），PIP 關節驅動的是 middle_mid，故 PIP 不影響路徑長度。真實蚓狀肌經背側伸肌腱帽作用於指間關節，單一路徑線無法表達。';
+const PER_JOINT_EXCEPTIONS: Record<string, string> = {
+  'quadriceps_left@hip_left': QUAD_HIP,
+  'quadriceps_right@hip_right': QUAD_HIP,
+  'lumbricals_left@middle_pip_left': LUMB_PIP,
+  'lumbricals_right@middle_pip_right': LUMB_PIP,
+};
+
+describe('M4.2：逐關節獨立的形變驗證', () => {
+  it('每條動態肌肉的每個 joints_crossed 關節，單獨擺動時都會產生形變（或列為有原因的例外）', async () => {
+    const { pose, muscles } = await rig();
+    const fails: string[] = [];
+    const report: string[] = [];
+    for (const def of manifest.muscles) {
+      for (const jid of def.joints_crossed) {
+        const j = pose.getDefinition(jid)!;
+        let best = 0;
+        let bestAt = '';
+        j.limits.forEach((lim, axis) => {
+          for (const deg of [lim.minDeg, lim.maxDeg]) {
+            const v = j.limits.map((_, i) => (i === axis ? deg : j.restDeg[i] ?? 0));
+            pose.reset();
+            pose.setAngles({ [jid]: v });
+            muscles.update();
+            const w = weights(muscles, def);
+            const m = Math.max(w.shorten, w.stretch);
+            if (m > best) { best = m; bestAt = `${lim.axis}=${deg}`; }
+          }
+        });
+        const key = `${def.id}@${jid}`;
+        report.push(`${key} ${best.toFixed(3)} (${bestAt})`);
+        if (best < PER_JOINT_MIN && !PER_JOINT_EXCEPTIONS[key]) fails.push(`${key}: 最大形變權重 ${best.toFixed(4)}`);
+        if (best >= PER_JOINT_MIN && PER_JOINT_EXCEPTIONS[key]) fails.push(`${key}: 已列為例外但實際有效（${best.toFixed(3)}），請移除例外`);
+      }
+    }
+    pose.reset();
+    if (process.env.PER_JOINT_REPORT) console.log(report.join('\n'));
+    expect(fails).toEqual([]);
+  });
+});
+
 describe('M4.1：更多下肢與軀幹肌群的路徑長度方向', () => {
   // [名稱, 姿勢, 應縮短, 應拉長]
   const cases: [string, Record<string, number[]>, string[], string[]][] = [
@@ -153,6 +203,50 @@ describe('M4.1：更多下肢與軀幹肌群的路徑長度方向', () => {
     muscles.update();
     // 浮點誤差（矩陣串接）約 1e-6 量級；路徑真正變化會在 1e-2 量級
     expect(Math.abs(muscles.getState('soleus_left')!.length / l0 - 1)).toBeLessThan(1e-4);
+  });
+
+  // M4.2 回歸：Visual QA P04 發現內收肌群起點離髖中心內側僅 2.5 cm，外展 20° 只拉長 1.8%（stretch ≈ 0.09，視覺上幾乎無變化）。
+  // 起點改到恥骨附近（approximate）後，外展 20° 應有明顯的 stretch 權重，且左右對稱。
+  it('M4.2：雙髖外展 20° 時內收肌群 stretch 權重 > 0.15，左右差 < 0.02', async () => {
+    const { pose, muscles } = await rig();
+    pose.setAngles({ hip_left: [0, 20, 0], hip_right: [0, 20, 0] });
+    muscles.update();
+    const l = muscles.getState('adductors_left')!.stretch;
+    const r = muscles.getState('adductors_right')!.stretch;
+    expect(l, 'adductors_left stretch').toBeGreaterThan(0.15);
+    expect(r, 'adductors_right stretch').toBeGreaterThan(0.15);
+    expect(Math.abs(l - r)).toBeLessThan(0.02);
+  });
+
+  // M4.2 回歸：P03 深蹲時臀大肌 stretch 釘在 1（預設上限 20% 約在髖屈曲 45° 就飽和）。
+  it('M4.2：臀大肌 stretch 在髖屈曲 60° 時未飽和，且 60° → 100° 仍持續上升', async () => {
+    const { pose, muscles } = await rig();
+    const at = (deg: number) => {
+      pose.reset();
+      pose.setAngles({ hip_left: [deg, 0, 0], hip_right: [deg, 0, 0] });
+      muscles.update();
+      return { l: muscles.getState('gluteus_maximus_left')!.stretch, r: muscles.getState('gluteus_maximus_right')!.stretch };
+    };
+    const s60 = at(60), s100 = at(100);
+    for (const k of ['l', 'r'] as const) {
+      expect(s60[k], `${k} 60°`).toBeLessThan(0.95);
+      expect(s100[k] - s60[k], `${k} 60°→100° 應持續上升`).toBeGreaterThan(0.05);
+    }
+    pose.reset();
+  });
+
+  it('M4.2：deformation_params 只用於指定肌肉，其他肌肉維持預設範圍', () => {
+    const withParams = manifest.muscles.filter((m) => m.deformation_params).map((m) => m.id).sort();
+    expect(withParams).toEqual(['gluteus_maximus_left', 'gluteus_maximus_right']);
+  });
+
+  it('M4.2：內收肌群起點位於髖中心內側且下方（恥骨附近）', () => {
+    for (const s of ['left', 'right'] as const) {
+      const o = manifest.muscles.find((m) => m.id === `adductors_${s}`)!.origin[0]!.position;
+      const c = manifest.joints.find((j) => j.id === `hip_${s}`)!.center;
+      expect(Math.abs(o[0]!), `${s} 起點應比髖中心更靠中線`).toBeLessThan(Math.abs(c[0]!) - 0.03);
+      expect(o[1]!, `${s} 起點應低於髖中心`).toBeLessThan(c[1]! - 0.03);
+    }
   });
 });
 
@@ -266,6 +360,107 @@ describe('M4.1：FootPlant（root translation 著地）', () => {
       fp.apply();
     }
     expect(pelvis.position.distanceTo(p1)).toBeLessThan(1e-6);
+  });
+
+  // M4.2 Phase 3B：明確驗證「選中的支撐點種類」，而不只是最低點貼地
+  describe('M4.2：支撐點種類（heel / ball / toe）', () => {
+    const kinds = (fp: FootPlant) => ({ l: fp.support('left')!.kind, r: fp.support('right')!.kind });
+
+    it('rest pose：雙腳都以前足（ball）支撐', async () => {
+      const { fp } = await planted('both');
+      fp.apply();
+      expect(kinds(fp)).toEqual({ l: 'ball', r: 'ball' });
+    });
+
+    it('踝背屈 20°：支撐點換成腳跟（heel），且貼地', async () => {
+      const { pose, fp } = await planted('both');
+      pose.setAngles({ ankle_left: [20, 0], ankle_right: [20, 0] });
+      expect(kinds(fp)).toEqual({ l: 'heel', r: 'heel' });
+      for (const s of ['left', 'right'] as const) expect(fp.support(s)!.now.y - fp.groundY, s).toBeCloseTo(0, 3);
+    });
+
+    it('踝蹠屈 −40°：支撐點換成趾尖（toe），且貼地', async () => {
+      const { pose, fp } = await planted('both');
+      pose.setAngles({ ankle_left: [-40, 0], ankle_right: [-40, 0] });
+      expect(kinds(fp)).toEqual({ l: 'toe', r: 'toe' });
+      for (const s of ['left', 'right'] as const) expect(fp.support(s)!.now.y - fp.groundY, s).toBeCloseTo(0, 3);
+    });
+
+    it('只蹠屈左踝：左 toe、右仍為 ball（左右獨立判定）', async () => {
+      const { pose, fp } = await planted('both');
+      pose.setAngles({ ankle_left: [-40, 0] });
+      expect(kinds(fp)).toEqual({ l: 'toe', r: 'ball' });
+    });
+
+    it('左單腳支撐抬右腿：左腳維持 ball 且不動，右腳離地', async () => {
+      const { pose, fp } = await planted('left');
+      pose.setAngles({ hip_right: [90, 0, 0], knee_right: [90] });
+      const l = fp.support('left')!;
+      expect(l.kind).toBe('ball');
+      expect(l.now.distanceTo(l.rest)).toBeLessThan(0.005);
+      expect(fp.support('right')!.now.y - fp.groundY).toBeGreaterThan(0.1);
+    });
+
+    it('reset 後支撐點種類回到 ball', async () => {
+      const { pose, fp } = await planted('both');
+      pose.setAngles({ ankle_left: [20, 0], ankle_right: [-40, 0] });
+      pose.reset();
+      expect(kinds(fp)).toEqual({ l: 'ball', r: 'ball' });
+    });
+  });
+
+  // M4.2 Phase 3C：上肢 IK 與 FootPlant 同時運行
+  describe('M4.2：上肢 IK + FootPlant 結合', () => {
+    const SQUAT = { hip_left: [100, 0, 0], hip_right: [100, 0, 0], knee_left: [120], knee_right: [120], ankle_left: [15, 0], ankle_right: [15, 0], lumbar: [25, 0, 0] };
+    const armIK = (scene: THREE.Object3D, pose: PoseController, side: 'left' | 'right') =>
+      new IKController(scene, pose, { effector: side === 'left' ? 'hand_l' : 'hand_r', joints: [`shoulder_${side}`, `elbow_${side}`] });
+    const reach = (ik: IKController) => ik.effectorWorld(new THREE.Vector3()).add(new THREE.Vector3(0, 0.08, 0.1));
+
+    it('深蹲（雙腳支撐）+ 左手 IK：手到達目標、雙腳仍貼地不滑、右臂角度不變', async () => {
+      const { scene, pose, fp } = await planted('both');
+      pose.setAngles(SQUAT);
+      const rightBefore = { s: [...pose.getAngles('shoulder_right')!], e: [...pose.getAngles('elbow_right')!] };
+      const ik = armIK(scene, pose, 'left');
+      const err = ik.solve(reach(ik));
+      expect(err).toBeLessThan(0.01);
+      for (const s of ['left', 'right'] as const) {
+        const sup = fp.support(s)!;
+        expect(sup.now.y - fp.groundY, s).toBeLessThan(0.005);
+        expect(slip(sup), s).toBeLessThan(0.01);
+      }
+      expect(pose.getAngles('shoulder_right')).toEqual(rightBefore.s);
+      expect(pose.getAngles('elbow_right')).toEqual(rightBefore.e);
+    });
+
+    it('左右手 IK 依序求解：第二隻手的求解不移動第一隻手', async () => {
+      const { scene, pose } = await planted('both');
+      pose.setAngles(SQUAT);
+      const L = armIK(scene, pose, 'left'), R = armIK(scene, pose, 'right');
+      expect(L.solve(reach(L))).toBeLessThan(0.01);
+      const lPos = L.effectorWorld(new THREE.Vector3()).clone();
+      expect(R.solve(reach(R))).toBeLessThan(0.01);
+      expect(L.effectorWorld(new THREE.Vector3()).distanceTo(lPos)).toBeLessThan(1e-4);
+    });
+
+    it('左單腳支撐抬右腿 + 右手 IK：左腳支撐點不動', async () => {
+      const { scene, pose, fp } = await planted('left');
+      pose.setAngles({ hip_right: [90, 0, 0], knee_right: [90] });
+      const ik = armIK(scene, pose, 'right');
+      expect(ik.solve(reach(ik))).toBeLessThan(0.01);
+      const l = fp.support('left')!;
+      expect(l.now.distanceTo(l.rest)).toBeLessThan(0.005);
+    });
+
+    it('IK + 深蹲後 reset：骨盆回到 rest、雙腳回到 ball 支撐', async () => {
+      const { scene, pose, fp, pelvis } = await planted('both');
+      const p0 = pelvis.position.clone();
+      pose.setAngles(SQUAT);
+      const ik = armIK(scene, pose, 'left');
+      ik.solve(reach(ik));
+      pose.reset();
+      expect(pelvis.position.distanceTo(p0)).toBeLessThan(1e-4);
+      expect([fp.support('left')!.kind, fp.support('right')!.kind]).toEqual(['ball', 'ball']);
+    });
   });
 
   it('off 模式：骨盆完全不動', async () => {

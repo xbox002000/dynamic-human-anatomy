@@ -40,6 +40,20 @@ export class AnatomyEngine {
     return this.footPlant?.mode ?? 'off';
   }
 
+  /** M4.2：目前支撐點（世界座標、種類），供 QA / 除錯；沒有 FootPlant 時為 null */
+  footSupport(side: 'left' | 'right') {
+    return this.footPlant?.support(side) ?? null;
+  }
+
+  get groundY(): number | null {
+    return this.footPlant?.groundY ?? null;
+  }
+
+  /** 模型根物件（唯讀用途：取景、量測） */
+  get model(): THREE.Object3D {
+    return this.root;
+  }
+
   setPlantMode(mode: PlantMode): void {
     if (!this.footPlant) return;
     this.footPlant.mode = mode;

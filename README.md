@@ -4,7 +4,7 @@
 
 Web-based 3D 人體解剖與動態肌肉形變引擎（Three.js + TypeScript + React + Blender + GLB）。
 
-目前階段：**M4.1 整合與驗證**。預設模型為 Z-Anatomy 全身（`full_body.glb`），舊的上肢模型可用 `?model=upper` 開啟。
+目前階段：**M4.2 Visual QA**（實際畫面品質驗證與自動化）。預設模型為 Z-Anatomy 全身（`full_body.glb`），舊的上肢模型可用 `?model=upper` 開啟。
 
 | 項目 | 狀態 |
 | --- | --- |
@@ -40,9 +40,18 @@ pnpm model:body             # 全身：上肢 + 脊柱/骨盆/下肢骨架 + 軀
 
 # 由 manifest + GLB 重新產生肌肉清單（--check：只檢查是否過期）
 node tools/validators/muscle-inventory.mjs
+
+# Visual QA（M4.2）：自動啟動 dev server、以 CDP 驅動 headless Edge / Chrome 套用固定姿勢並截圖
+pnpm qa:visual           # 8 組姿勢（tools/dev/qa-poses.json）× 多視角 → artifacts/visual-qa/m4.2/（含 results.json）
+pnpm qa:smoke            # CI 用：P01 / P03 / P05 正面，檢查載入、console error、姿勢套用、足部支撐
+node tools/dev/visual-qa.mjs --only P03,P07 --out tmp/qa      # 只跑指定姿勢
+node tools/dev/visual-qa.mjs --url http://localhost:5173      # 使用已啟動的 dev server
+# 瀏覽器路徑可用環境變數 BROWSER 指定；結束碼 0 = 通過、1 = 檢查失敗、2 = 無法啟動 / 載入
 ```
 
-GitHub Actions（`.github/workflows/ci.yml`）每次 push / PR 都會跑 typecheck、測試、GLB 驗證與 build。
+GitHub Actions（`.github/workflows/ci.yml`）每次 push / PR 都會跑 typecheck、測試、GLB 驗證、build，以及瀏覽器 smoke QA（截圖以 artifact 上傳）。完整 8 姿勢的截圖判讀是本機流程，CI 不做像素比對。
+
+QA Harness（`apps/web/src/dev/qaHarness.ts`）只在開發模式且網址帶 `?qa=1` 時載入，掛在 `window.__dhaQA`；production build 不包含。結果見 [m4.2-baseline.md](docs/qa/m4.2-baseline.md)、[m4.2-visual-findings.md](docs/qa/m4.2-visual-findings.md)。
 
 ## 結構
 

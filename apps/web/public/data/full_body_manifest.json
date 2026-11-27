@@ -3599,6 +3599,7 @@
       "innervation": "Inferior gluteal nerve (L5–S2)",
       "activation": 0,
       "deformation_profile": "fusiform_v2",
+      "deformation_params": {"max_lengthening": 0.32},
       "morphs": {
         "bulge": "bulge",
         "shorten": "shorten",
@@ -3664,6 +3665,7 @@
       "innervation": "Inferior gluteal nerve (L5–S2)",
       "activation": 0,
       "deformation_profile": "fusiform_v2",
+      "deformation_params": {"max_lengthening": 0.32},
       "morphs": {
         "bulge": "bulge",
         "shorten": "shorten",
@@ -4194,9 +4196,9 @@
         {
           "bone": "pelvis",
           "position": [
-            0.04541,
-            0.8578,
-            0.03912
+            0.02196,
+            0.8006,
+            0.01905
           ],
           "confidence": "approximate"
         }
@@ -4248,9 +4250,9 @@
         {
           "bone": "pelvis",
           "position": [
-            -0.04572,
-            0.85774,
-            0.03914
+            -0.02208,
+            0.80105,
+            0.01931
           ],
           "confidence": "approximate"
         }

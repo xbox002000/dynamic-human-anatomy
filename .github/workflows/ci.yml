@@ -44,3 +44,20 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      # M4.2：瀏覽器 smoke QA（headless Chrome + SwiftShader）。驗證 dev server 啟動、full_body 載入、
+      # 無 console error、P01/P03/P05 姿勢套用與足部支撐檢查、可產生截圖。
+      # 完整 8 姿勢的視覺判讀仍為本機流程（pnpm qa:visual），CI 不做截圖像素比對。
+      - name: Visual QA smoke (headless Chrome)
+        env:
+          BROWSER: /usr/bin/google-chrome
+        run: pnpm qa:smoke
+
+      - name: Upload Visual QA smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-qa-smoke
+          path: artifacts/visual-qa/smoke/
+          if-no-files-found: warn
+          retention-days: 14

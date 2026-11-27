@@ -1,0 +1,17 @@
+{
+  "$comment": "M4.2 Visual QA 固定姿勢。角度須符合 full_body_manifest.json 的 joints.limits（runner 會記錄實際被夾住後的角度）。符號：hip [屈曲+, 外展+, 內旋+]；ankle [背屈+, 內翻+]；lumbar/thoracic [前屈+, 左側屈+, 左旋+]；elbow [屈曲+]。views：front / threeQuarter / side / back。focus：相機對準的骨骼（可選）與縮放。",
+  "poses": [
+    { "id": "P01", "name": "Rest Pose", "plant": "both", "angles": {}, "views": ["front", "threeQuarter", "side"] },
+    { "id": "P02", "name": "Biceps Curl", "plant": "both", "angles": { "elbow_left": [90] }, "activation": { "biceps_brachii_left": 0.8, "brachialis_left": 0.85, "brachioradialis_left": 0.5 }, "select": "biceps_brachii_left",
+      "views": ["front", "threeQuarter", "side"], "focus": { "bone": "forearm_l", "zoom": 3.2 } },
+    { "id": "P03", "name": "Deep Squat", "plant": "both", "angles": { "hip_left": [100, 0, 0], "hip_right": [100, 0, 0], "knee_left": [120], "knee_right": [120], "ankle_left": [15, 0], "ankle_right": [15, 0], "lumbar": [25, 0, 0], "shoulder_left": [80, 0, 0], "shoulder_right": [80, 0, 0] },
+      "select": "quadriceps_left", "views": ["front", "threeQuarter", "side"] },
+    { "id": "P04", "name": "Hip Abduction", "plant": "both", "angles": { "hip_left": [0, 20, 0], "hip_right": [0, 20, 0] }, "select": "adductors_left", "views": ["front", "threeQuarter", "back"] },
+    { "id": "P05", "name": "Single Leg Raise (left stance)", "plant": "left", "angles": { "hip_right": [90, 0, 0], "knee_right": [90] }, "select": "hamstrings_right", "views": ["front", "threeQuarter", "side"], "focus": { "bone": "thigh_r", "zoom": 2.6 }, "isolate": true },
+    { "id": "P06", "name": "Ankle Dorsiflexion", "plant": "both", "angles": { "ankle_left": [20, 0], "ankle_right": [20, 0] }, "select": "tibialis_anterior_left",
+      "views": ["front", "threeQuarter", "side"], "focus": { "bone": "foot_l", "zoom": 3.0 } },
+    { "id": "P07", "name": "Plantarflexion", "plant": "both", "angles": { "ankle_left": [-40, 0], "ankle_right": [-40, 0] }, "select": "gastrocnemius_left",
+      "views": ["front", "threeQuarter", "side"], "focus": { "bone": "foot_l", "zoom": 3.0 } },
+    { "id": "P08", "name": "Trunk Lateral Flexion (left)", "plant": "both", "angles": { "lumbar": [0, 20, 0], "thoracic": [0, 20, 0] }, "select": "abdominal_obliques_left", "views": ["front", "threeQuarter", "back"] }
+  ]
+}

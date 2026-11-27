@@ -9,6 +9,8 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
+    "qa:visual": "node tools/dev/visual-qa.mjs",
+    "qa:smoke": "node tools/dev/visual-qa.mjs --smoke",
     "model:arm": "node tools/blender/run-blender.mjs tools/blender/build_arm_sample.py",
     "model:zanatomy:fetch": "git clone --depth 1 https://github.com/ArianArsenal/anatomy-explorer.git assets/source/anatomy-explorer",
     "model:zanatomy:extract": "node tools/model_optimizer/extract-parts.mjs assets/working/zanatomy_arm_l.glb \"^(Humerus|Radius|Ulna|Long head of biceps brachii|Short head of biceps brachii|Medial head of triceps brachii|Lateral head of triceps brachii|Long head of triceps brachii|Brachialis muscle)\\.l$\" assets/source/anatomy-explorer/public/models/skeleton.glb assets/source/anatomy-explorer/public/models/muscles.glb",

@@ -50,6 +50,14 @@ export interface MuscleDefinition {
   /** 預設啟動程度 0..1（執行期狀態另存於 MuscleState） */
   activation: number;
   deformation_profile: string;
+  /**
+   * 形變範圍（選填，M4.2）：視為「完全縮短 / 完全拉長」的應變。未設定時沿用 profile 預設（0.30 / 0.20）。
+   * 用於路徑長度變化範圍特別大的肌肉（例：臀大肌髖屈曲時拉長 >30%），避免在關節極限前就飽和。估計值（approximate）。
+   */
+  deformation_params?: {
+    max_shortening?: number;
+    max_lengthening?: number;
+  };
   /** 該 mesh 上的 morph target 名稱對應 */
   morphs?: {
     /** 舊版：徑向隆起 + 縱向縮短混在一起（M2.6 起僅相容用，視為 bulge） */

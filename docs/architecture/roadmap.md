@@ -42,12 +42,16 @@
 | M2.6 | **雙側上肢穩定化**（不增加肌肉）：① Activation 不驅動縱向縮短（`bulge`/`shorten`/`stretch` 分離）② 握持接觸依實際手指姿勢量測 ③ 雙側 IK 獨立拖曳 ④ 真實 GLB 測試 ⑤ GitHub Actions ⑥ README/ATTRIBUTION/License 一致 | `pnpm test` 含真實 GLB 測試全過，CI 綠燈 |
 | M3（已完成） | 全身骨架 Deform Rig（骨盆根、腰/胸/頸/頭、髖/膝/踝/趾）＋軀幹與下肢 80 組靜態肌肉（LBS，權重取自最近骨骼表面）；`full_body.glb` | 全身可擺姿；`fullBodyGlb.test.ts` 在 5 種大幅姿勢下量測 skinning 後肌肉到骨骼距離，p95 增量 ≤ 20 mm |
 | M4（部分完成） | 軀幹與下肢 12 組（左右 24 條）動態肌肉（臀、髂腰、股四頭、膕旁、內收、小腿、脛前、腹、豎脊）＋腳掌著地（root translation）；**瑜珈伸展動作尚未做** | 膝 / 髖 / 軀幹前屈 / 深蹲的路徑長度方向測試通過 |
-| M4.1（本階段） | 整合與驗證：由 manifest + GLB 產生肌肉清單；每條動態肌肉的 mesh / morph / 骨骼 / 長度 / activation 獨立性測試；更多下肢與軀幹動作方向測試；FootPlant 各模式測試；形變 profile 審查；文件同步。不新增肌肉、不重建模型 | `pnpm test`、typecheck、build、全部 GLB 驗證通過 |
+| M4.1（已完成） | 整合與驗證：由 manifest + GLB 產生肌肉清單；每條動態肌肉的 mesh / morph / 骨骼 / 長度 / activation 獨立性測試；更多下肢與軀幹動作方向測試；FootPlant 各模式測試；形變 profile 審查；文件同步。不新增肌肉、不重建模型 | `pnpm test`、typecheck、build、全部 GLB 驗證通過 |
+| M4.2（本階段） | Visual QA：DEV-only QA Harness（`?qa=1`）＋ CDP runner（`pnpm qa:visual` / `qa:smoke`）＋ 8 組固定姿勢截圖；實際視覺檢查（[findings](../qa/m4.2-visual-findings.md)）；修正內收肌群起點、臀大肌形變範圍（`deformation_params`）；逐關節獨立測試、支撐點種類測試、IK + FootPlant 結合測試；CI 加入瀏覽器 smoke。不重建 GLB | 8 姿勢可重複截圖、94 tests、CI 綠燈 |
+| M4.3（建議） | 依 M4.2 實際發現：股直肌獨立路徑（解除 quadriceps@hip 例外）、髖屈曲 corrective shape key（膕旁肌群起點端 LBS 剪切）、踮腳 preset（MTP 伸展）、腿部 IK 解決外展滑動 | 由 Visual QA 重拍對照 |
 | M5 | 外觀層：皮膚＋**衣物**＋顯示模式切換（穿著 / 皮膚 / 肌肉 / 骨骼 / X-ray） | 同一動作下四種模式切換無錯位 |
 | M6 | **男 / 女體型**選項（外觀層 shape keys＋內部比例縮放）＋體型參數 | 兩體型都能播放所有動作 |
 | M7 | 動作庫擴充（mocap 重定向）、效能（LOD、分層載入）、行動裝置 | 60 FPS 桌面 / 30 FPS 行動 |
 
-## 5. 現況與下一步（M4.1 之後）
+## 5. 現況與下一步（M4.2 之後）
+
+M4.2 Visual QA 已確認並修正：內收肌群外展時幾乎不拉長（起點資料）、臀大肌 stretch 過早飽和（形變範圍）。已知但未修：膕旁肌群在髖屈曲 90° 起點端的 LBS 剪切（P2）、踮腳姿勢趾關節未伸展（P3）、側屈時手壓入大腿（P3，無碰撞）。逐關節測試保留 4 個有原因的例外（quadriceps@hip、lumbricals@PIP，左右各一）。詳見 [m4.2-visual-findings.md](../qa/m4.2-visual-findings.md)。
 
 已完成：
 

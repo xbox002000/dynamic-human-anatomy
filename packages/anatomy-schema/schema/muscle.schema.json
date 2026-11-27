@@ -34,6 +34,14 @@
     "innervation": { "type": "string" },
     "activation": { "type": "number", "minimum": 0, "maximum": 1 },
     "deformation_profile": { "type": "string" },
+    "deformation_params": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_shortening": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "max_lengthening": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+      }
+    },
     "morphs": {
       "type": "object",
       "properties": {

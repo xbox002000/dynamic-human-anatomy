@@ -16,7 +16,10 @@ import * as THREE from 'three';
  */
 export type PlantMode = 'off' | 'both' | 'left' | 'right';
 
+export type ContactKind = 'heel' | 'ball' | 'toe';
+
 interface Contact {
+  kind: ContactKind;
   bone: THREE.Bone;
   local: THREE.Vector3;
   rest: THREE.Vector3; // rest pose 世界座標
@@ -54,9 +57,9 @@ export class FootPlant {
       const tp = toeMesh ? worldVerts(toeMesh) : [];
       const tip = tp.length ? tp.reduce((a, p) => (p.z > a.z ? p : a)) : ball.clone();
       this.feet.set(side, [
-        { bone: foot, local: foot.worldToLocal(heel.clone()), rest: heel },
-        { bone: foot, local: foot.worldToLocal(ball.clone()), rest: ball },
-        { bone: toes, local: toes.worldToLocal(tip.clone()), rest: tip },
+        { kind: 'heel', bone: foot, local: foot.worldToLocal(heel.clone()), rest: heel },
+        { kind: 'ball', bone: foot, local: foot.worldToLocal(ball.clone()), rest: ball },
+        { kind: 'toe', bone: toes, local: toes.worldToLocal(tip.clone()), rest: tip },
       ]);
     }
     if (!this.feet.size) throw new Error('FootPlant：找不到足部骨骼網格');
@@ -66,13 +69,13 @@ export class FootPlant {
   }
 
   /** 腳的支撐點（目前最低的接觸點）：{ now, rest } 世界座標 */
-  support(side: 'left' | 'right'): { now: THREE.Vector3; rest: THREE.Vector3 } | null {
+  support(side: 'left' | 'right'): { now: THREE.Vector3; rest: THREE.Vector3; kind: ContactKind } | null {
     const cs = this.feet.get(side);
     if (!cs) return null;
-    let best: { now: THREE.Vector3; rest: THREE.Vector3 } | null = null;
+    let best: { now: THREE.Vector3; rest: THREE.Vector3; kind: ContactKind } | null = null;
     for (const c of cs) {
       const now = c.bone.localToWorld(c.local.clone());
-      if (!best || now.y < best.now.y) best = { now, rest: c.rest };
+      if (!best || now.y < best.now.y) best = { now, rest: c.rest, kind: c.kind };
     }
     return best;
   }

@@ -8,7 +8,9 @@ const LEG = [0.3, 0.12];
 const TRUNK = [0.15, 0.08];
 const D = {
   // 臀大肌：路徑繞過髖關節後方（坐骨結節附近）→ 止於股骨臀肌粗隆，髖屈曲時拉長
+  // M4.2：髖屈曲 100° 時路徑拉長約 31%，預設上限 20% 會在約 45° 就飽和 → 上限改為 32%（approximate）
   gluteus_maximus: { origin: 'pelvis', insertion: 'thigh', joints: ['hip'], shape: LEG, architecture: 'flat', name_latin: 'Musculus gluteus maximus',
+    deformation_params: { max_lengthening: 0.32 },
     insertion_pt: { at: 'hip', up: -0.1, side: 'posterior', depth: 0.02 },
     via: [{ bone: 'pelvis', at: 'hip', up: -0.01, side: 'posterior', depth: 0.07 }],
     function: ['髖關節伸展', '髖關節外旋'], innervation: 'Inferior gluteal nerve (L5–S2)' },
@@ -27,7 +29,10 @@ const D = {
     insertion_pt: { at: 'knee', up: -0.04, side: 'posterior', depth: 0.02 },
     via: [{ bone: 'thigh', at: 'knee', up: 0.03, side: 'posterior', depth: 0.04 }],
     function: ['膝關節屈曲', '髖關節伸展'], innervation: 'Sciatic nerve (L5–S2)' },
+  // 內收肌群（M4.2）：自動推算的起點離髖中心內側僅 2.5 cm 且同高，外展 20° 只拉長 1.8%。
+  // 改為恥骨體 / 恥骨下枝附近：髖中心內側 4.9 cm、下方 6 cm、前方 2.5 cm（approximate）
   adductors: { origin: 'pelvis', insertion: 'thigh', joints: ['hip'], shape: LEG, architecture: 'multihead',
+    origin_pt: { at: 'hip', up: -0.06, side: 'anterior', depth: 0.025, medial: 0.0487 },
     function: ['髖關節內收'], innervation: 'Obturator nerve (L2–L4)；內收大肌後部為 Sciatic nerve' },
   gastrocnemius: { origin: 'thigh', insertion: 'foot', joints: ['knee', 'ankle'], shape: LEG, architecture: 'bipennate',
     origin_pt: { at: 'knee', up: 0.02, side: 'posterior', depth: 0.03 },

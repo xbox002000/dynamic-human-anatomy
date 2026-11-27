@@ -8,7 +8,7 @@ import './app.css';
 
 const base = import.meta.env.BASE_URL;
 const MODELS: Record<string, { glb: string; manifest: string; label: string }> = {
-  full: { glb: 'full_body.glb', manifest: 'full_body_manifest.json', label: 'Z-Anatomy 全身骨架（CC BY-SA 4.0）· 軀幹與下肢肌肉為靜態跟隨 · 附著點、關節與啟動曲線為近似值' },
+  full: { glb: 'full_body.glb', manifest: 'full_body_manifest.json', label: 'Z-Anatomy 全身骨架（CC BY-SA 4.0）· 54 條動態肌肉、其餘肌群為靜態跟隨 · 附著點、關節與啟動曲線為近似值' },
   upper: { glb: 'upper_limbs.glb', manifest: 'upper_limbs_manifest.json', label: 'Z-Anatomy 雙側上肢（CC BY-SA 4.0）· 附著點、關節與啟動曲線為近似值' },
   zanatomy: { glb: 'arm_zanatomy_l.glb', manifest: 'arm_zanatomy_manifest.json', label: 'Z-Anatomy 左上肢（CC BY-SA 4.0）· 附著點與關節為近似推算值' },
   sample: { glb: 'arm_sample.glb', manifest: 'arm_manifest.json', label: '程序化樣本 · 尺寸與附著點為 placeholder，非解剖參考數據' },
@@ -68,6 +68,10 @@ export function App() {
         }
         setEngine(eng);
         (window as unknown as { dha: AnatomyEngine }).dha = eng;
+        // M4.2：Visual QA Harness 只在開發模式載入（production build 會整段移除）
+        if (import.meta.env.DEV && q.has('qa')) {
+          void import('../dev/qaHarness').then((m) => m.installQAHarness(eng));
+        }
         // ?motion=dumbbell_curl&t=1.1 ：載入情境動作並跳到指定時間（驗收 / 分享用）
         const mid = q.get('motion');
         if (mid) {

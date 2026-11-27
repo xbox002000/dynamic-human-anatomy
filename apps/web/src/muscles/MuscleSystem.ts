@@ -138,7 +138,14 @@ export class MuscleSystem {
     for (const rt of this.muscles.values()) {
       const length = this.measure(rt);
       const profile = DEFORMATION_PROFILES[rt.def.deformation_profile] ?? DEFORMATION_PROFILES.fusiform_v1!;
-      const out = profile({ length, restLength: rt.restLength, activation: rt.state.activation });
+      const dp = rt.def.deformation_params;
+      const out = profile({
+        length,
+        restLength: rt.restLength,
+        activation: rt.state.activation,
+        maxShortening: dp?.max_shortening,
+        maxLengthening: dp?.max_lengthening,
+      });
       Object.assign(rt.state, { length, contraction: out.contraction, stretch: out.stretch, bulge: out.bulge });
       const inf = rt.mesh?.morphTargetInfluences;
       if (inf) {

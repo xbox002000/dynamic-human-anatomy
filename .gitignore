@@ -13,3 +13,7 @@ tmp-*.png
 tmp/
 __pycache__/
 *.pyc
+
+# M4.2 Visual QA：smoke 與單姿勢暫存輸出不提交（CI 以 artifact 上傳）
+artifacts/visual-qa/smoke/
+artifacts/visual-qa/m4.2-p0*/
