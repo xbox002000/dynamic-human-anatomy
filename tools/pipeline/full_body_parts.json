@@ -1,5 +1,5 @@
 {
-  "$comment": "M3 全身資產定義：以 upper_limbs_parts.json 為基底（extends），另加 body 區段（中軸骨架、下肢、全身靜態肌群）。body.bones 的 side：mid = 中線結構（自動收集無後綴與 .l/.r），both = 左右各一份。body.muscles 為 M3 靜態肌群：只做 LBS 跟隨骨架（權重依最近骨骼表面距離），尚無形變 morph。ratio 為 Blender Decimate 比例。",
+  "$comment": "M3 全身資產定義：以 upper_limbs_parts.json 為基底（extends），另加 body 區段（中軸骨架、下肢、全身靜態肌群）。body.bones 的 side：mid = 中線結構（自動收集無後綴與 .l/.r），both = 左右各一份。body.muscles 為軀幹與下肢 80 組肌群：預設為靜態，只做 LBS 跟隨骨架（權重依最近骨骼表面距離），沒有形變 morph；其中 12 組（左右 24 條）由 tools/pipeline/m4-dynamic.mjs 寫入 dynamic 設定後升級為動態肌肉（bulge/shorten/stretch shape keys + 起止點 + 經過點，皆為 approximate），其餘 56 組維持靜態。實際清單見 docs/anatomy/muscle-inventory.md。ratio 為 Blender Decimate 比例。",
   "extends": "upper_limbs_parts.json",
   "body": {
     "bone_ratio": 0.6,

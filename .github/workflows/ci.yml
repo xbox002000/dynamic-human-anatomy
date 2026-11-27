@@ -37,6 +37,10 @@ jobs:
           node tools/validators/validate-glb.mjs apps/web/public/models/upper_limbs.glb apps/web/public/data/upper_limbs_manifest.json
           node tools/validators/validate-glb.mjs apps/web/public/models/full_body.glb apps/web/public/data/full_body_manifest.json
           node tools/validators/validate-glb.mjs apps/web/public/models/arm_zanatomy_l.glb apps/web/public/data/arm_zanatomy_manifest.json
+          node tools/validators/validate-glb.mjs apps/web/public/models/arm_sample.glb apps/web/public/data/arm_manifest.json
+
+      - name: Muscle inventory up to date
+        run: node tools/validators/muscle-inventory.mjs --check
 
       - name: Build
         run: pnpm build

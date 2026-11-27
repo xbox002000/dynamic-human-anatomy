@@ -4,7 +4,19 @@
 
 Web-based 3D 人體解剖與動態肌肉形變引擎（Three.js + TypeScript + React + Blender + GLB）。
 
-目前階段：**M3 全身骨架**。預設模型為 Z-Anatomy 全身（`full_body.glb`）：骨盆為根、脊柱（腰 / 胸 / 頸 / 頭）、雙下肢（髖 / 膝 / 踝 / 趾）可 FK 擺姿；雙側上肢沿用 M2.6 的動態肌肉（形變、握持、雙側 IK）；軀幹與下肢 80 組肌肉先做靜態跟隨（LBS，尚無形變）。舊的上肢模型可用 `?model=upper` 開啟。下一步是 M4 全身主要肌群形變（見 [roadmap](docs/architecture/roadmap.md)）。
+目前階段：**M4.1 整合與驗證**。預設模型為 Z-Anatomy 全身（`full_body.glb`），舊的上肢模型可用 `?model=upper` 開啟。
+
+| 項目 | 狀態 |
+| --- | --- |
+| M3 全身骨架（骨盆根、腰 / 胸 / 頸 / 頭、髖 / 膝 / 踝 / 趾，FK 擺姿） | 完成 |
+| 上肢動態肌肉（M2.6：形變、握持、雙側 IK） | 30 條 MuscleDefinition |
+| 軀幹與下肢肌群 | 80 組：24 組動態（M4，含 `bulge` / `shorten` / `stretch`）、56 組靜態（只跟隨骨架做 LBS） |
+| `full_body_manifest.json` 的動態 MuscleDefinition | 54 條（30 + 24） |
+| 腳掌著地 FootPlant | 已實作，為 **root translation**（只平移骨盆），不是多關節足部 IK |
+| 皮膚外觀層 / 衣物 | 未實作 |
+| 瑜珈動作片段 | 未實作（目前只有二頭彎舉） |
+
+逐條肌肉的清單（architecture、跨越關節、路徑骨骼、附著點 confidence、GLB morph targets）由實際 manifest 與 GLB 產生，見 [muscle-inventory.md](docs/anatomy/muscle-inventory.md)（`node tools/validators/muscle-inventory.mjs`）。形變 profile 的審查見 [deformation-profiles.md](docs/architecture/deformation-profiles.md)。下一步見 [roadmap](docs/architecture/roadmap.md)。
 
 ## 需求
 
@@ -24,7 +36,10 @@ pnpm build
 # 模型管線（需 Blender）
 pnpm model:zanatomy:fetch   # 下載 anatomy-explorer 的 Z-Anatomy GLB 到 assets/source/
 pnpm model:upper            # 擷取雙側上肢 → Blender rig → upper_limbs.glb + manifest → 驗證
-pnpm model:body             # M3 全身：上肢 + 脊柱/骨盆/下肢骨架 + 軀幹與下肢靜態肌肉 → full_body.glb
+pnpm model:body             # 全身：上肢 + 脊柱/骨盆/下肢骨架 + 軀幹與下肢肌群（24 動態 / 56 靜態）→ full_body.glb
+
+# 由 manifest + GLB 重新產生肌肉清單（--check：只檢查是否過期）
+node tools/validators/muscle-inventory.mjs
 ```
 
 GitHub Actions（`.github/workflows/ci.yml`）每次 push / PR 都會跑 typecheck、測試、GLB 驗證與 build。
@@ -74,3 +89,5 @@ Pose 與 Activation 是兩個獨立輸入（藍圖 §1.2）。M2.6 起每條肌�
 ## 免責聲明
 
 本專案用於教學與視覺化。附著點、關節中心、握把幾何與活動範圍為由模型推算或教科書近似值；肌肉啟動與形變為視覺模型，肘力矩為只算啞鈴重量的靜力近似，**不代表真實生理或臨床數據**。
+
+腳掌著地（FootPlant）只平移骨盆，不調整任何關節角度。當姿勢讓兩腳在水平方向分開（例如雙側髖外展）時，雙腳模式只保證兩腳中點不動與最低支撐點貼地，各腳仍會滑動；要讓兩腳同時完全固定，需要之後的多關節腿部 IK。

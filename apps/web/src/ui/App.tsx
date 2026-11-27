@@ -78,7 +78,10 @@ export function App() {
           });
         }
       })
-      .catch((e: unknown) => setError(String(e)));
+      .catch((e: unknown) => {
+        console.error('[load] failed', e instanceof Error ? e.stack : e);
+        setError(String(e));
+      });
     return () => {
       alive = false;
       eng.dispose();

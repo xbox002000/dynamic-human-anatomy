@@ -14,9 +14,10 @@
 | 需求 | 對應模組 | 現況 |
 | --- | --- | --- |
 | 顯示模式切換 | AnatomyEngine 圖層（skin/muscle/bone）+ 新增 clothing 圖層 | skin/muscle/bone 已有；clothing 未做 |
-| 完整人體骨架 | Deform Rig（藍圖 §5） | 僅左上肢 |
-| 全身肌肉形變 | MuscleSystem + deformation profile | 左上肢 3 條肌肉 |
-| 情境動作 | MotionClip（anatomy-schema）+ 時間軸 + 每幀 activation 曲線 | 有姿勢插值播放，無正式動作庫 |
+| 完整人體骨架 | Deform Rig（藍圖 §5） | 完成（M3）：骨盆根、脊柱、雙上肢含手指、雙下肢，49 個關節 |
+| 全身肌肉形變 | MuscleSystem + deformation profile | 54 條動態（上肢 30 + 軀幹下肢 24），另 56 組靜態只跟隨骨架；全部使用 `fusiform_v2`，見 [deformation-profiles.md](deformation-profiles.md) |
+| 腳掌著地 | FootPlant（root translation） | 已實作；非多關節足部 IK |
+| 情境動作 | MotionClip（anatomy-schema）+ 時間軸 + 每幀 activation 曲線 | 只有二頭彎舉；瑜珈動作未做 |
 | 男 / 女體型 | 新增 BodyVariant：外層皮膚 + 衣物使用 shape keys / 不同網格，內部解剖共用並縮放 | 未做 |
 | 衣物 | 綁在同一骨架上的 SkinnedMesh | 未做 |
 
@@ -40,14 +41,23 @@
 | M2.5 | 手指骨段/關節、握力肌群、握持求解、肘外力矩 | 雙手握住啞鈴，顯示接觸與力矩 |
 | M2.6 | **雙側上肢穩定化**（不增加肌肉）：① Activation 不驅動縱向縮短（`bulge`/`shorten`/`stretch` 分離）② 握持接觸依實際手指姿勢量測 ③ 雙側 IK 獨立拖曳 ④ 真實 GLB 測試 ⑤ GitHub Actions ⑥ README/ATTRIBUTION/License 一致 | `pnpm test` 含真實 GLB 測試全過，CI 綠燈 |
 | M3（已完成） | 全身骨架 Deform Rig（骨盆根、腰/胸/頸/頭、髖/膝/踝/趾）＋軀幹與下肢 80 組靜態肌肉（LBS，權重取自最近骨骼表面）；`full_body.glb` | 全身可擺姿；`fullBodyGlb.test.ts` 在 5 種大幅姿勢下量測 skinning 後肌肉到骨骼距離，p95 增量 ≤ 20 mm |
-| M4 | 全身主要肌群形變（胸、背、腹、臀、大腿、小腿）＋**瑜珈伸展動作**（例：下犬式、戰士二式） | 伸展時目標肌群拉長可視化 |
+| M4（部分完成） | 軀幹與下肢 12 組（左右 24 條）動態肌肉（臀、髂腰、股四頭、膕旁、內收、小腿、脛前、腹、豎脊）＋腳掌著地（root translation）；**瑜珈伸展動作尚未做** | 膝 / 髖 / 軀幹前屈 / 深蹲的路徑長度方向測試通過 |
+| M4.1（本階段） | 整合與驗證：由 manifest + GLB 產生肌肉清單；每條動態肌肉的 mesh / morph / 骨骼 / 長度 / activation 獨立性測試；更多下肢與軀幹動作方向測試；FootPlant 各模式測試；形變 profile 審查；文件同步。不新增肌肉、不重建模型 | `pnpm test`、typecheck、build、全部 GLB 驗證通過 |
 | M5 | 外觀層：皮膚＋**衣物**＋顯示模式切換（穿著 / 皮膚 / 肌肉 / 骨骼 / X-ray） | 同一動作下四種模式切換無錯位 |
 | M6 | **男 / 女體型**選項（外觀層 shape keys＋內部比例縮放）＋體型參數 | 兩體型都能播放所有動作 |
 | M7 | 動作庫擴充（mocap 重定向）、效能（LOD、分層載入）、行動裝置 | 60 FPS 桌面 / 30 FPS 行動 |
 
-## 5. 下一步（M4）
+## 5. 現況與下一步（M4.1 之後）
 
-1. 下肢與軀幹主要肌群加上 `bulge` / `shorten` / `stretch` shape keys 與附著點，改走 MuscleSystem（動態）。
-2. 腳掌著地：加入「根骨骼固定在支撐腳」的模式（目前骨盆為根，深蹲時腳會離地）。
-3. 瑜珈動作片段：下犬式、戰士二式，含啟動曲線。
-4. 檔案大小：full_body.glb 約 12 MB，評估 meshopt 壓縮或分層載入。
+已完成：
+
+1. 軀幹與下肢 24 條動態肌肉（`bulge` / `shorten` / `stretch` + 起止點 + 經過點，全部 `approximate`）。
+2. 腳掌著地：FootPlant 以平移骨盆讓支撐腳貼地（雙腳 / 左 / 右 / 關閉）。這是 root translation，不是多關節足部 IK；雙髖外展等讓兩腳水平分開的姿勢，各腳會滑動（測試中已量化）。
+
+尚未完成：
+
+1. 瑜珈動作片段：下犬式、戰士二式，含啟動曲線。
+2. 檔案大小：full_body.glb 約 14 MB，評估 meshopt 壓縮或分層載入。
+3. 多頭肌（股四頭肌、肱三頭肌等）各頭獨立路徑，見 [deformation-profiles.md](deformation-profiles.md) 的 `multihead_v1` 草案。
+4. 腿部 IK：讓雙腳在外展等姿勢下同時固定。
+5. 外觀層（皮膚、衣物）與體型選項（M5、M6）。
